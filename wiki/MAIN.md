@@ -34,6 +34,10 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-07: Added `.github/workflows/build-iso.yml`: manual workflow with
+  a `version` input (e.g. `26.1.0`); builds the ISO in a privileged Arch
+  container via `build-iso.sh --github-actions`, splits assets over 1800M
+  and publishes a GitHub release with SHA256 checksums.
 - 2026-09-07: Added `--github-actions` to `scripts/build-iso.sh` (forwarded
   to all `stage-*.sh` helpers): clones component repos from the TontooOS
   GitHub org next to the checkout instead of using local sibling dirs.
