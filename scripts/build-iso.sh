@@ -51,7 +51,9 @@ clone_github_repo() { # clone_github_repo <repo> <dest>
     return 0
   fi
   echo "  cloning ${GITHUB_ORG}/${repo} -> ${dest}"
-  git clone --depth 1 "https://github.com/${GITHUB_ORG}/${repo}.git" "${dest}"
+  if ! git clone --depth 1 "https://github.com/${GITHUB_ORG}/${repo}.git" "${dest}"; then
+    echo "WARNING: clone failed for ${GITHUB_ORG}/${repo}, continuing without it." >&2
+  fi
 }
 
 if [[ "${GITHUB_ACTIONS_BUILD}" -eq 1 ]]; then
@@ -111,15 +113,36 @@ if [[ "${GITHUB_ACTIONS_BUILD}" -eq 1 ]]; then
   stage_flags=(--github-actions)
 fi
 
-bash "${base_dir}/BaseOS/scripts/stage-fonts.sh" "${stage_flags[@]}"
-bash "${base_dir}/BaseOS/scripts/stage-launchpad.sh" "${stage_flags[@]}"
-bash "${base_dir}/BaseOS/scripts/stage-fishrunner.sh" "${stage_flags[@]}"
-bash "${base_dir}/BaseOS/scripts/stage-fishperms.sh" "${stage_flags[@]}"
-bash "${base_dir}/BaseOS/scripts/stage-compositor.sh" "${stage_flags[@]}"
-bash "${base_dir}/BaseOS/scripts/stage-menubar.sh" "${stage_flags[@]}"
-bash "${base_dir}/BaseOS/scripts/stage-cursors.sh" "${stage_flags[@]}"
-bash "${base_dir}/BaseOS/scripts/stage-wallpapers.sh" "${stage_flags[@]}"
-bash "${base_dir}/BaseOS/scripts/stage-frameworks.sh" "${stage_flags[@]}"
-bash "${base_dir}/BaseOS/scripts/stage-sshd.sh" "${stage_flags[@]}"
+# Every stage is best-effort: a failing stage warns loudly and the build
+# continues with the remaining stages so one missing component can never
+# kill the whole ISO build. Failures are summarized after mkarchiso.
+failed_stages=()
+run_stage() { # run_stage <name> <script>
+  local name="$1"
+  local script="$2"
+  echo "==> Stage: ${name}"
+  if ! bash "${script}" "${stage_flags[@]}"; then
+    echo "WARNING: stage '${name}' failed, continuing without it." >&2
+    failed_stages+=("${name}")
+  fi
+  return 0
+}
+
+run_stage "fonts" "${base_dir}/BaseOS/scripts/stage-fonts.sh"
+run_stage "launchpad" "${base_dir}/BaseOS/scripts/stage-launchpad.sh"
+run_stage "fishrunner" "${base_dir}/BaseOS/scripts/stage-fishrunner.sh"
+run_stage "fishperms" "${base_dir}/BaseOS/scripts/stage-fishperms.sh"
+run_stage "compositor" "${base_dir}/BaseOS/scripts/stage-compositor.sh"
+run_stage "menubar" "${base_dir}/BaseOS/scripts/stage-menubar.sh"
+run_stage "cursors" "${base_dir}/BaseOS/scripts/stage-cursors.sh"
+run_stage "wallpapers" "${base_dir}/BaseOS/scripts/stage-wallpapers.sh"
+run_stage "frameworks" "${base_dir}/BaseOS/scripts/stage-frameworks.sh"
+run_stage "sshd" "${base_dir}/BaseOS/scripts/stage-sshd.sh"
 
 "${sudo_cmd[@]}" mkarchiso -v -w "${work_dir}" -o "${output_dir}" "${profile_dir}"
+
+if [[ "${#failed_stages[@]}" -gt 0 ]]; then
+  echo "==> Build finished WITH WARNINGS. Failed stages: ${failed_stages[*]}" >&2
+else
+  echo "==> Build finished, all stages ok."
+fi

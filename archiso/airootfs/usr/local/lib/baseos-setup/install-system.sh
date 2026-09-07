@@ -228,6 +228,15 @@ install_assets_into_target() {
      arch-chroot "$target_mount" chown -R "${username}:${username}" "/Users/${username}/.config"
    fi
 
+   # Firefox default profile (native Firefox reads ~/.mozilla, not ~/.config).
+   copy_if_exists /etc/skel/.mozilla /Users/${username}/.mozilla
+
+   if [[ -d /etc/skel/.mozilla ]]; then
+     install -d -m 0755 "${target_mount}/Users/${username}/.mozilla"
+     cp -a /etc/skel/.mozilla/. "${target_mount}/Users/${username}/.mozilla/"
+     arch-chroot "$target_mount" chown -R "${username}:${username}" "/Users/${username}/.mozilla"
+   fi
+
 }
 
 install_compositor_into_target() {

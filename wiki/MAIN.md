@@ -34,6 +34,12 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-07: Hardened the build: every stage is best-effort now (failing
+  clone, missing binary or failed framework warns and continues);
+  `build-iso.sh` prints a failed-stage summary after `mkarchiso`.
+  `stage-launchpad.sh` copies binaries only when built (fixes `cp` abort
+  before the legacy fallback). Workflow installs `sassc`, `perl`, `gawk`
+  and `gtk4`.
 - 2026-09-07: Added `.github/workflows/build-iso.yml`: manual workflow with
   a `version` input (e.g. `26.1.0`); builds the ISO in a privileged Arch
   container via `build-iso.sh --github-actions`, splits assets over 1800M

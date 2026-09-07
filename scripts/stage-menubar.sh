@@ -93,8 +93,8 @@ echo "==> Building Menubar.app with TBuild (${menubar_dir})..."
 
 app_zip="${out_dir}/Menubar.app"
 if [[ ! -f "${app_zip}" ]]; then
-  echo "stage-menubar: TBuild did not produce ${app_zip}" >&2
-  exit 1
+  echo "WARNING: stage-menubar: TBuild did not produce ${app_zip}, skipping menubar staging." >&2
+  exit 0
 fi
 
 # --- Extract the bundle into /System/Applications/Menubar.app ---

@@ -40,11 +40,14 @@ cd "${fishperms_dir}"
 cargo build --release --workspace
 
 mkdir -p "${dest_dir}"
-cp -f "${fishperms_dir}/target/release/fishperms-daemon" "${dest_dir}/fishperms-daemon"
-cp -f "${fishperms_dir}/target/release/fishpermctl" "${dest_dir}/fishpermctl"
-cp -f "${fishperms_dir}/target/release/fishperms-prompt" "${dest_dir}/fishperms-prompt"
-cp -f "${fishperms_dir}/target/release/fishbox" "${dest_dir}/fishbox"
-chmod 0755 "${dest_dir}/fishperms-daemon" "${dest_dir}/fishpermctl" "${dest_dir}/fishperms-prompt" "${dest_dir}/fishbox"
+for bin in fishperms-daemon fishpermctl fishperms-prompt fishbox; do
+  if [[ -f "${fishperms_dir}/target/release/${bin}" ]]; then
+    cp -f "${fishperms_dir}/target/release/${bin}" "${dest_dir}/${bin}"
+    chmod 0755 "${dest_dir}/${bin}"
+  else
+    echo "WARNING: stage-fishperms: ${bin} was not built, skipping." >&2
+  fi
+done
 echo "==> FishPerms binaries -> ${dest_dir}"
 
 # Stage the LaunchPad service definition

@@ -37,9 +37,13 @@ if [[ -d "${launchctl_dir}" ]]; then
   echo "==> Building launchctl (TontooProgramms/LaunchCTL)..."
   cd "${launchctl_dir}"
   cargo build --release
-  cp -f "${launchctl_dir}/target/release/launchctl" "${dest_dir}/launchctl"
-  chmod 0755 "${dest_dir}/launchctl"
-  echo "==> launchctl -> ${dest_dir}/launchctl"
+  if [[ -f "${launchctl_dir}/target/release/launchctl" ]]; then
+    cp -f "${launchctl_dir}/target/release/launchctl" "${dest_dir}/launchctl"
+    chmod 0755 "${dest_dir}/launchctl"
+    echo "==> launchctl -> ${dest_dir}/launchctl"
+  else
+    echo "WARNING: stage-launchpad: launchctl was not built, skipping." >&2
+  fi
 else
   echo "stage-launchpad: LaunchCTL directory not found at ${launchctl_dir}" >&2
 fi
@@ -49,9 +53,13 @@ if [[ -d "${launchpad_daemon_dir}" ]]; then
   echo "==> Building launchpad-daemon (TontooServices/LaunchPad)..."
   cd "${launchpad_daemon_dir}"
   cargo build --release
-  cp -f "${launchpad_daemon_dir}/target/release/launchpad-daemon" "${dest_dir}/launchpad-daemon"
-  chmod 0755 "${dest_dir}/launchpad-daemon"
-  echo "==> launchpad-daemon -> ${dest_dir}/launchpad-daemon"
+  if [[ -f "${launchpad_daemon_dir}/target/release/launchpad-daemon" ]]; then
+    cp -f "${launchpad_daemon_dir}/target/release/launchpad-daemon" "${dest_dir}/launchpad-daemon"
+    chmod 0755 "${dest_dir}/launchpad-daemon"
+    echo "==> launchpad-daemon -> ${dest_dir}/launchpad-daemon"
+  else
+    echo "WARNING: stage-launchpad: launchpad-daemon was not built, skipping." >&2
+  fi
 else
   echo "stage-launchpad: LaunchPad daemon directory not found at ${launchpad_daemon_dir}" >&2
 fi
@@ -62,11 +70,21 @@ if [[ ! -f "${dest_dir}/launchctl" ]] || [[ ! -f "${dest_dir}/launchpad-daemon" 
     if grep -q "launchctl\|launchpad-daemon" "${launchpad_lib_dir}/Cargo.toml" 2>/dev/null; then
       echo "==> Fallback: Building legacy TontooLibs/LaunchPad workspace..."
       cd "${launchpad_lib_dir}"
-      cargo build --release || true
-      [[ -f "${launchpad_lib_dir}/target/release/launchctl" ]] && cp -f "${launchpad_lib_dir}/target/release/launchctl" "${dest_dir}/launchctl" && chmod 0755 "${dest_dir}/launchctl" || true
-      [[ -f "${launchpad_lib_dir}/target/release/launchpad-daemon" ]] && cp -f "${launchpad_lib_dir}/target/release/launchpad-daemon" "${dest_dir}/launchpad-daemon" && chmod 0755 "${dest_dir}/launchpad-daemon" || true
+      cargo build --release || echo "WARNING: stage-launchpad: legacy workspace build failed." >&2
+      if [[ -f "${launchpad_lib_dir}/target/release/launchctl" ]] && [[ ! -f "${dest_dir}/launchctl" ]]; then
+        cp -f "${launchpad_lib_dir}/target/release/launchctl" "${dest_dir}/launchctl"
+        chmod 0755 "${dest_dir}/launchctl"
+      fi
+      if [[ -f "${launchpad_lib_dir}/target/release/launchpad-daemon" ]] && [[ ! -f "${dest_dir}/launchpad-daemon" ]]; then
+        cp -f "${launchpad_lib_dir}/target/release/launchpad-daemon" "${dest_dir}/launchpad-daemon"
+        chmod 0755 "${dest_dir}/launchpad-daemon"
+      fi
     fi
   fi
+fi
+
+if [[ ! -f "${dest_dir}/launchctl" ]] || [[ ! -f "${dest_dir}/launchpad-daemon" ]]; then
+  echo "WARNING: stage-launchpad: one or more binaries missing (launchctl/launchpad-daemon)." >&2
 fi
 
 echo "==> LaunchPad binaries -> ${dest_dir}"

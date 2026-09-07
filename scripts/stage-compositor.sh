@@ -42,6 +42,10 @@ cd "${compositor_dir}"
 cargo build --release --no-default-features --features udev
 
 mkdir -p "${dest_dir}"
-cp -f "${compositor_dir}/target/release/tontoo-compositor" "${dest}"
-chmod 0755 "${dest}"
-echo "==> Compositor binary -> ${dest}"
+if [[ -f "${compositor_dir}/target/release/tontoo-compositor" ]]; then
+  cp -f "${compositor_dir}/target/release/tontoo-compositor" "${dest}"
+  chmod 0755 "${dest}"
+  echo "==> Compositor binary -> ${dest}"
+else
+  echo "WARNING: stage-compositor: tontoo-compositor was not built, skipping." >&2
+fi

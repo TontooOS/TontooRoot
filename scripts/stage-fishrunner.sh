@@ -45,13 +45,22 @@ cd "${runner_dir}"
 cargo build --release
 
 mkdir -p "${dest_dir}"
-cp -f "${runner_dir}/target/release/tapp" "${dest_dir}/tapp"
-chmod 0755 "${dest_dir}/tapp"
-echo "==> tapp -> ${dest_dir}"
+if [[ -f "${runner_dir}/target/release/tapp" ]]; then
+  cp -f "${runner_dir}/target/release/tapp" "${dest_dir}/tapp"
+  chmod 0755 "${dest_dir}/tapp"
+  echo "==> tapp -> ${dest_dir}"
+else
+  echo "WARNING: stage-fishrunner: tapp was not built, skipping." >&2
+fi
 
 lang_dest="${base_dir}/BaseOS/archiso/airootfs/usr/share/tapp/lang"
 mkdir -p "${lang_dest}"
-cp -f "${runner_dir}/lang/en_us.json" "${lang_dest}/en_us.json"
-cp -f "${runner_dir}/lang/de_de.json" "${lang_dest}/de_de.json"
-chmod 0644 "${lang_dest}/en_us.json" "${lang_dest}/de_de.json"
+for lang in en_us de_de; do
+  if [[ -f "${runner_dir}/lang/${lang}.json" ]]; then
+    cp -f "${runner_dir}/lang/${lang}.json" "${lang_dest}/${lang}.json"
+    chmod 0644 "${lang_dest}/${lang}.json"
+  else
+    echo "WARNING: stage-fishrunner: lang/${lang}.json not found, skipping." >&2
+  fi
+done
 echo "==> tapp lang -> ${lang_dest}"

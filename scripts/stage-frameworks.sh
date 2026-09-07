@@ -166,7 +166,7 @@ build_framework() { # build_framework <RepoDir> <system-name>
 for entry in "${FRAMEWORKS[@]}"; do
   name="${entry%%:*}"
   repo="${entry##*:}"
-  build_framework "${repo}" "${name}"
+  build_framework "${repo}" "${name}" || echo "WARNING: framework ${name} failed, continuing." >&2
 done
 
 log "=========================================="
