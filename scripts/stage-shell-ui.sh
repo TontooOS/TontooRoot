@@ -3,6 +3,17 @@
 # into the live ISO airootfs at /usr/bin/tontoo-shell-ui.
 set -euo pipefail
 
+# Accepts --github-actions (forwarded by build-iso.sh). No path changes:
+# shell_ui sources are expected next to this repo in both modes.
+GITHUB_ACTIONS_BUILD=0
+for arg in "$@"; do
+  case "${arg}" in
+    --github-actions)
+      GITHUB_ACTIONS_BUILD=1
+      ;;
+  esac
+done
+
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 base_dir="$(cd -- "${script_dir}/../.." && pwd)"
 shell_dir="${base_dir}/shell_ui"

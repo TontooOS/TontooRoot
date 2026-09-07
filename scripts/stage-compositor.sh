@@ -7,6 +7,18 @@
 # mkarchiso so the resulting ISO can boot straight into the Wayland session.
 set -euo pipefail
 
+# Accepts --github-actions (forwarded by build-iso.sh). In that mode all
+# external sources are pre-cloned to the standard local paths, so this
+# script needs no path changes.
+GITHUB_ACTIONS_BUILD=0
+for arg in "$@"; do
+  case "${arg}" in
+    --github-actions)
+      GITHUB_ACTIONS_BUILD=1
+      ;;
+  esac
+done
+
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 base_dir="$(cd -- "${script_dir}/../.." && pwd)"
 compositor_dir="${base_dir}/compositor"

@@ -75,6 +75,21 @@ From the repository root, use the helper so staged packages and apps are copied 
 bash BaseOS/scripts/build-iso.sh
 ```
 
+With `--github-actions`, component sources are cloned from
+`github.com/${GITHUB_ORG}` (default `TontooOS`) next to the checkout instead
+of using local sibling directories, then the same build runs:
+
+```bash
+bash BaseOS/scripts/build-iso.sh --github-actions
+```
+
+Cloned repos: `Compositor`, `FishPerms`, `LaunchPad`, `LaunchCTL`,
+`FishRunner`, `MenuBar` (as `Menubar`), `TBuild`, `LaunchPadLib` and all
+`TontooLibs` frameworks. Cursor and GTK theme sources are vendored under
+`BaseOS/vendor/`, fonts and wallpapers live in `BaseOS/fonts/` and
+`BaseOS/wallpapers/`. `shell_ui/` and `TontooUI/` sources are optional and
+skipped when absent.
+
 ## License
 
 TCL v26.1, see [LICENSE.md](LICENSE.md).

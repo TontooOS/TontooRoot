@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Accepts --github-actions (forwarded by build-iso.sh). In that mode the
+# framework sources are pre-cloned next to this repo, so the Windows-only
+# sibling default below is replaced with the in-workspace path.
+GITHUB_ACTIONS_BUILD=0
+for arg in "$@"; do
+  case "${arg}" in
+    --github-actions)
+      GITHUB_ACTIONS_BUILD=1
+      ;;
+  esac
+done
+
 if [[ "$(uname -s)" != "Linux" ]]; then
   echo "stage-frameworks: must run on Linux (WSL)." >&2
   exit 1
@@ -25,7 +37,12 @@ airootfs_dir="${profile_dir}/airootfs"
 framework_dir="${airootfs_dir}/Library/System"
 
 # Framework sources live locally in the TontooLibs folder - no GitHub.
-libs_src="${TONTOO_LIBS_SRC:-/mnt/c/Users/arlo1/Documents/TontooLibs}"
+libs_src=""
+if [[ "${GITHUB_ACTIONS_BUILD}" -eq 1 ]]; then
+  libs_src="${TONTOO_LIBS_SRC:-${base_dir}/TontooLibs}"
+else
+  libs_src="${TONTOO_LIBS_SRC:-/mnt/c/Users/arlo1/Documents/TontooLibs}"
+fi
 
 # System framework location on the build machine (and on TontooOS). Framework
 # crates reference each other via absolute path deps like

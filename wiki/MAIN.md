@@ -34,6 +34,12 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-07: Added `--github-actions` to `scripts/build-iso.sh` (forwarded
+  to all `stage-*.sh` helpers): clones component repos from the TontooOS
+  GitHub org next to the checkout instead of using local sibling dirs.
+  Vendored MacTahoe cursor and GTK theme sources into `BaseOS/vendor/`;
+  `stage-cursors.sh`, `stage-mactahoe-theme.sh` and the CRLF fix in
+  `build-iso.sh` now use the in-repo copies.
 - 2026-09-07: Repository made GitHub-ready: new `.gitignore` for staged
   airootfs artifacts (fonts, wallpapers, binaries, frameworks, Menubar app,
   SSH host keys) and build outputs; added `LICENSE.md` (TCL v26.1);

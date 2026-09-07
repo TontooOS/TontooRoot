@@ -1,0 +1,11 @@
+VERSION: (GNOME-SHELL) 48.0
+
+RELEASE TIME: 2026年 02月 20日 星期五 20:14:36 CST
+
+--->>> GTK | GNOME Shell | Cinnamon | Metacity | XFWM | Plank <<<---
+Color variants   : Dark;Light
+Theme variants   : default
+Opacity variants : normal;solid
+Alt variants     : normal
+Scheme variants  : standard;nord
+Start icon style : apple

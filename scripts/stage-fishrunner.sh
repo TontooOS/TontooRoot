@@ -8,9 +8,26 @@
 # before mkarchiso.
 set -euo pipefail
 
+# Accepts --github-actions (forwarded by build-iso.sh). In that mode the
+# FishRunner source is pre-cloned next to this repo, so the sibling default
+# below is replaced with the in-workspace path.
+GITHUB_ACTIONS_BUILD=0
+for arg in "$@"; do
+  case "${arg}" in
+    --github-actions)
+      GITHUB_ACTIONS_BUILD=1
+      ;;
+  esac
+done
+
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 base_dir="$(cd -- "${script_dir}/../.." && pwd)"
-runner_dir="${FISHRUNNER_DIR:-${base_dir}/../TontooProgramms/FishRunner}"
+runner_dir=""
+if [[ "${GITHUB_ACTIONS_BUILD}" -eq 1 ]]; then
+  runner_dir="${FISHRUNNER_DIR:-${base_dir}/TontooProgramms/FishRunner}"
+else
+  runner_dir="${FISHRUNNER_DIR:-${base_dir}/../TontooProgramms/FishRunner}"
+fi
 dest_dir="${base_dir}/BaseOS/archiso/airootfs/usr/bin"
 
 if ! command -v cargo >/dev/null 2>&1; then

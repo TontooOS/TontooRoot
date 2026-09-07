@@ -10,6 +10,17 @@
 # Windows/NTFS always land in the squashfs as 0644, which sshd rejects.
 set -euo pipefail
 
+# Accepts --github-actions (forwarded by build-iso.sh). Host keys are
+# generated locally, so this script needs no path changes.
+GITHUB_ACTIONS_BUILD=0
+for arg in "$@"; do
+  case "${arg}" in
+    --github-actions)
+      GITHUB_ACTIONS_BUILD=1
+      ;;
+  esac
+done
+
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 base_dir="$(cd -- "${script_dir}/../.." && pwd)"
 key_dir="${base_dir}/BaseOS/archiso/airootfs/etc/ssh"

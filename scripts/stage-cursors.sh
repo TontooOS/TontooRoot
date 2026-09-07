@@ -1,12 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Accepts --github-actions (forwarded by build-iso.sh). Cursor sources are
+# vendored inside this repo, so this script needs no path changes.
+GITHUB_ACTIONS_BUILD=0
+for arg in "$@"; do
+  case "${arg}" in
+    --github-actions)
+      GITHUB_ACTIONS_BUILD=1
+      ;;
+  esac
+done
+
 # Build MacTahoe cursors with shadows from SVG sources
 # Requires: xcursorgen, rsvg-convert (librsvg), python3
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 base_dir="$(cd -- "${script_dir}/../.." && pwd)"
-src_dir="${base_dir}/ai_temp_filees/MacTahoe-icon-theme/cursors/src"
+src_dir="${base_dir}/BaseOS/vendor/MacTahoe-cursors/cursors/src"
 themes_dest="${base_dir}/BaseOS/archiso/airootfs/usr/share/icons"
 
 if [[ ! -d "$src_dir" ]]; then
