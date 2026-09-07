@@ -1,0 +1,5 @@
+# Normalize line endings: shell scripts always LF (build runs on Linux via WSL).
+*.sh text eol=lf
+*.bash text eol=lf
+*.py text eol=lf
+*.ps1 text eol=crlf

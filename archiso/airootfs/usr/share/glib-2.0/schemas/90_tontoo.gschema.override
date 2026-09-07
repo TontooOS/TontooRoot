@@ -1,0 +1,18 @@
+[org.gnome.desktop.interface]
+gtk-theme='TontooOS-Dark'
+color-scheme='prefer-dark'
+font-name='SF Pro Display 10'
+cursor-theme='MacTahoe-dark-cursors'
+cursor-size=24
+icon-theme='MacTahoe'
+document-font-name='SF Pro Display 10'
+monospace-font-name='SF Pro Text 10'
+
+[org.gnome.desktop.wm.preferences]
+button-layout='close,minimize,maximize:'
+titlebar-font='SF Pro Display 10'
+
+[org.gnome.desktop.sound]
+theme-name='tontoosounds'
+event-sounds=true
+input-feedback-sounds=true

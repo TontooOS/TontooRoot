@@ -1,0 +1,7 @@
+name: live-setup
+execute: /usr/local/lib/archiso/enable-live-desktop.sh
+type: sys
+user: root
+depends_on:
+  - networkmanager
+restart: false

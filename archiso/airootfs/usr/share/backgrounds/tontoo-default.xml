@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<background>
+  <starttime>
+    <year>2026</year>
+    <month>06</month>
+    <day>24</day>
+    <hour>00</hour>
+    <minute>00</minute>
+    <second>00</second>
+  </starttime>
+  <static>
+    <duration>86400</duration>
+    <file>/usr/share/backgrounds/27-Golden-Gate.png</file>
+  </static>
+</background>

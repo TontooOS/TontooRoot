@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = plasma-desktop
+
+[Action]
+Description = Preparing the live desktop session
+When = PostTransaction
+Exec = /usr/bin/bash /usr/local/lib/archiso/enable-live-desktop.sh

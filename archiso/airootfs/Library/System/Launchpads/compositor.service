@@ -1,0 +1,9 @@
+name: compositor
+execute: /usr/local/bin/start-compositor.sh
+type: sys
+user: liveuser
+depends_on:
+  - seatd
+  - pipewire
+  - live-setup
+restart: true

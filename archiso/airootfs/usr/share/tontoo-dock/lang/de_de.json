@@ -1,0 +1,12 @@
+{
+  "apps": {
+    "terminal": {
+      "name": "Terminal",
+      "description": "Terminalfenster oeffnen"
+    },
+    "settings": {
+      "name": "Einstellungen",
+      "description": "Systemeinstellungen oeffnen"
+    }
+  }
+}

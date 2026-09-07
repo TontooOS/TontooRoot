@@ -1,0 +1,7 @@
+name: networkmanager
+execute: /usr/bin/NetworkManager --no-daemon
+type: sys
+user: root
+depends_on:
+  - dbus
+restart: true

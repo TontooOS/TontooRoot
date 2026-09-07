@@ -1,0 +1,44 @@
+# TontooOS boot splash
+Window.SetBackgroundTopColor(0.0, 0.0, 0.0);
+Window.SetBackgroundBottomColor(0.0, 0.0, 0.0);
+
+logo_image = Image("Tontoo_White.png");
+track_image = Image("progress-track.png");
+fill_image = Image("progress-fill.png");
+
+logo_sprite = Sprite(logo_image);
+track_sprite = Sprite(track_image);
+fill_sprite = Sprite(fill_image);
+
+progress = 0.05;
+
+fun boot_progress(time, progress) {
+    logo_sprite.SetOpacity(1);
+}
+
+Plymouth.SetBootProgressFunction(boot_progress);
+
+fun refresh() {
+    [ax, ay, aw, ah] = Window.GetGeometry();
+    lw = aw * 0.25;
+    lh = lw * Image.GetHeight(logo_image) / Image.GetWidth(logo_image);
+    logo_sprite.SetImage(logo_image.Scale(lw, lh));
+    logo_sprite.SetPosition((aw - lw) / 2, (ah - lh) / 2 - ah * 0.03, 100);
+    logo_sprite.SetOpacity(1);
+
+    bw = aw / 3;
+    bh = 6;
+    bx = (aw - bw) / 2;
+    by = ah - 48;
+    track_sprite.SetImage(track_image.Scale(bw, bh));
+    track_sprite.SetPosition(bx, by, 99);
+    track_sprite.SetOpacity(1);
+
+    progress = progress + 0.004;
+    if (progress > 0.95) { progress = 0.95; }
+    fill_sprite.SetImage(fill_image.Scale(bw * progress, bh));
+    fill_sprite.SetPosition(bx, by, 100);
+    fill_sprite.SetOpacity(1);
+}
+
+Plymouth.SetRefreshFunction(refresh);

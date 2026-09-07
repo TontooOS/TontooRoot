@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Tontoo App Runner
+GenericName=Application Runner
+Exec=/usr/bin/tapp %f
+Terminal=false
+NoDisplay=true
+MimeType=application/x-tontoo-app;

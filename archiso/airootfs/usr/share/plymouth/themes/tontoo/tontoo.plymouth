@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Tontoo Startup
+Description=Startup splash with the default Tontoo icon
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/tontoo
+ScriptFile=/usr/share/plymouth/themes/tontoo/tontoo.script

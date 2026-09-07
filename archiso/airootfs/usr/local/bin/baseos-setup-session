@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export XDG_CURRENT_DESKTOP=TontooOS
+export XDG_SESSION_TYPE=wayland
+export ELECTRON_OZONE_PLATFORM_HINT=auto
+export XCURSOR_THEME=MacTahoe-cursors
+export XCURSOR_SIZE=24
+export GDK_BACKEND=wayland,x11
+
+while true; do
+  dbus-run-session -- /usr/bin/electron /usr/share/baseos-setup --no-sandbox --kiosk --start-fullscreen || true
+  sleep 1
+done

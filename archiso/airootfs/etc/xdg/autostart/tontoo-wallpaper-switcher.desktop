@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=TontooOS Cursor Switcher
+Comment=Automatically switches cursor theme based on Dark/Light mode
+Exec=/usr/local/bin/tontoo-wallpaper-switcher.sh
+Icon=preferences-desktop-cursors
+Terminal=false
+X-GNOME-Autostart-enabled=true
+X-KDE-autostart-after-restore=true

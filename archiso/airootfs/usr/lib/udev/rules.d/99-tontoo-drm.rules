@@ -1,0 +1,5 @@
+# TontooOS: grant the video group access to DRM devices.
+# The compositor and Wayland clients (as the liveuser, who is in the video
+# group) need to open the DRM master and render nodes.
+KERNEL=="card*", SUBSYSTEM=="drm", GROUP="video", MODE="0660"
+KERNEL=="renderD*", SUBSYSTEM=="drm", GROUP="video", MODE="0660"

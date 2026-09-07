@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=TontooOS-Light
+Comment=TontooOS Light Theme based on MacOS Tahoe
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=TontooOS-Light
+MetacityTheme=TontooOS-Light
+IconTheme=MacTahoe
+CursorTheme=MacTahoe-cursors
+ButtonLayout=close,minimize,maximize:menu

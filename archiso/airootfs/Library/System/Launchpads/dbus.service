@@ -1,0 +1,6 @@
+name: dbus
+execute: /usr/bin/dbus-daemon --system --nofork --nopidfile
+type: sys
+user: root
+depends_on: []
+restart: true

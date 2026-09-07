@@ -1,0 +1,6 @@
+{
+  "id": "settings",
+  "nameKey": "apps.settings.name",
+  "descriptionKey": "apps.settings.description",
+  "icon": "apps/settings/icons/settings.png"
+}

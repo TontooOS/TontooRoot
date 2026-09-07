@@ -1,0 +1,4 @@
+# Dynamic via $XCURSOR_THEME (set in /etc/profile.d/baseos-cursors.sh)
+# Dark variant: MacTahoe-dark-cursors
+Xcursor.theme: MacTahoe-cursors
+Xcursor.size: 24

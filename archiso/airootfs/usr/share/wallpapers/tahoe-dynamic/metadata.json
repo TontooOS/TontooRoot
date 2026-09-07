@@ -1,0 +1,8 @@
+{
+    "KPlugin": {
+        "Id": "tahoe-dynamic",
+        "Name": "Tahoe",
+        "License": "CC-BY-SA-4.0",
+        "Description": "Lake Tahoe wallpaper with day/night switching"
+    }
+}

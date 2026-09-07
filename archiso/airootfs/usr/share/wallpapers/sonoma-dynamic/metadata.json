@@ -1,0 +1,8 @@
+{
+    "KPlugin": {
+        "Id": "sonoma-dynamic",
+        "Name": "Sonoma",
+        "License": "CC-BY-SA-4.0",
+        "Description": "Sonoma Coast wallpaper with day/night switching"
+    }
+}

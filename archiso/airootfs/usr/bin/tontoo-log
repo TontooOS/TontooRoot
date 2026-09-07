@@ -1,0 +1,33 @@
+#!/bin/bash
+# View TontooOS compositor logs
+LOG_FILE="/Users/liveuser/.local/log/compositor.log"
+
+if [[ ! -f "$LOG_FILE" ]]; then
+    echo "No compositor log found at $LOG_FILE"
+    echo "The compositor may not have started yet."
+    exit 1
+fi
+
+case "${1:-}" in
+    -f|--follow)
+        echo "Following compositor log (Ctrl+C to stop)..."
+        tail -f "$LOG_FILE"
+        ;;
+    -c|--clear)
+        > "$LOG_FILE"
+        echo "Log cleared."
+        ;;
+    -h|--help)
+        echo "Usage: tontoo-log [OPTIONS]"
+        echo ""
+        echo "Options:"
+        echo "  (none)    Show last 50 lines of compositor log"
+        echo "  -f        Follow (tail -f) the log in real-time"
+        echo "  -c        Clear the log file"
+        echo "  -h        Show this help"
+        ;;
+    *)
+        echo "=== TontooOS Compositor Log (last 50 lines) ==="
+        tail -50 "$LOG_FILE"
+        ;;
+esac

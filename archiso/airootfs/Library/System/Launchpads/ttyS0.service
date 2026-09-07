@@ -1,0 +1,6 @@
+name: ttyS0
+execute: /usr/sbin/agetty -a liveuser ttyS0 115200
+type: sys
+user: root
+depends_on: []
+restart: true

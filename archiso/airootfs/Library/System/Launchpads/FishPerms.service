@@ -1,0 +1,5 @@
+name: FishPerms
+execute: /usr/bin/fishperms-daemon
+type: sys
+user: root
+restart: true

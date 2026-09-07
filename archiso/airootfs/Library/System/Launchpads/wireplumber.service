@@ -1,0 +1,8 @@
+name: wireplumber
+execute: /usr/bin/wireplumber
+type: sys
+user: root
+depends_on:
+  - pipewire
+  - dbus
+restart: true

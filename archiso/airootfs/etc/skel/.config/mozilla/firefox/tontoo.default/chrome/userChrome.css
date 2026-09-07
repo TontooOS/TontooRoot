@@ -1,0 +1,89 @@
+/* TontooOS traffic lights — macOS style window controls for Firefox.
+ * Firefox 155 uses classes (not IDs) for the window buttons:
+ * .titlebar-button.titlebar-close / .titlebar-min / .titlebar-max / .titlebar-restore
+ * Buttons are placed on the left via gtk-decoration-layout=close,minimize,maximize:
+ * in /etc/skel/.config/gtk-3.0/settings.ini (copied to every live user).
+ * Colors: close #FF5F57, minimize #FEBC2E, zoom #28C840.
+ */
+
+.titlebar-buttonbox-container {
+  margin: 0 6px 0 8px !important;
+}
+
+.titlebar-button {
+  appearance: none !important;
+  list-style-image: none !important;
+  width: 16px !important;
+  min-width: 16px !important;
+  max-width: 16px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+  max-height: 16px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  margin: auto 5px !important;
+  border: 0.5px solid rgba(0, 0, 0, 0.28) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: rgba(0, 0, 0, 0.55) !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+}
+
+/* Firefox toggles max/restore via stylesheet (sizemode), not via the hidden
+ * attribute — our display rule above would resurrect the inactive one
+ * (green twice), so mirror the toggle explicitly. */
+#main-window:not([sizemode="maximized"]) .titlebar-button.titlebar-restore {
+  display: none !important;
+}
+
+#main-window[sizemode="maximized"] .titlebar-button.titlebar-max {
+  display: none !important;
+}
+
+/* Hide the stock monochrome glyphs */
+.titlebar-button > .toolbarbutton-icon,
+.titlebar-button > image {
+  display: none !important;
+}
+
+.titlebar-button.titlebar-close {
+  background-color: #FF5F57 !important;
+}
+
+.titlebar-button.titlebar-min {
+  background-color: #FEBC2E !important;
+}
+
+.titlebar-button.titlebar-max,
+.titlebar-button.titlebar-restore {
+  background-color: #28C840 !important;
+}
+
+/* macOS style: glyphs appear while hovering the traffic light group */
+.titlebar-buttonbox-container:hover .titlebar-button.titlebar-close::after {
+  content: "×" !important;
+}
+
+.titlebar-buttonbox-container:hover .titlebar-button.titlebar-min::after {
+  content: "–" !important;
+}
+
+.titlebar-buttonbox-container:hover .titlebar-button.titlebar-max::after,
+.titlebar-buttonbox-container:hover .titlebar-button.titlebar-restore::after {
+  content: "+" !important;
+}
+
+.titlebar-button.titlebar-close:hover {
+  background-color: #E0443E !important;
+}
+
+.titlebar-button.titlebar-min:hover {
+  background-color: #DEA123 !important;
+}
+
+.titlebar-button.titlebar-max:hover,
+.titlebar-button.titlebar-restore:hover {
+  background-color: #1AAB29 !important;
+}

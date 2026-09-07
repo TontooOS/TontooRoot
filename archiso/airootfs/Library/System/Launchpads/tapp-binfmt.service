@@ -1,0 +1,5 @@
+name: tapp-binfmt
+execute: sh /usr/local/bin/tapp-binfmt.sh
+type: sys
+user: root
+restart: false

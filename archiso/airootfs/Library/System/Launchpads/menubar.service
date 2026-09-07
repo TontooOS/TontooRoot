@@ -1,0 +1,16 @@
+# TontooOS system menubar (external app, replaces the former
+# compositor-internal menubar rendering).
+#
+# Multi-user note: the live ISO runs a single `liveuser` session, so the
+# service runs as `liveuser`. On installed systems `install-system.sh`
+# rewrites this file with the real username (`user: <username>`). When
+# LaunchPad gains per-session services, this becomes a session service
+# instantiated per logged-in user instead.
+name: menubar
+execute: /usr/local/bin/start-menubar.sh
+type: sys
+user: liveuser
+depends_on:
+  - compositor
+  - live-setup
+restart: true

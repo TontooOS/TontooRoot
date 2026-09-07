@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=TontooOS Wallpaper Setup
+Comment=Sets up Golden Gate wallpaper pack with dark/light switching
+Exec=/usr/local/bin/tontoo-wallpaper-setup.sh
+Icon=preferences-desktop-wallpaper
+Terminal=false
+X-GNOME-Autostart-enabled=true
+X-KDE-autostart-after-restore=true

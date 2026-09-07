@@ -1,0 +1,7 @@
+name: network-fix
+execute: sh /usr/local/bin/tontoo-net-up.sh
+type: sys
+user: root
+depends_on:
+  - dbus
+restart: false

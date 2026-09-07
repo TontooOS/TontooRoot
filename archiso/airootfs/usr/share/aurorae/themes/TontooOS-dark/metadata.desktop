@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=TontooOS Dark
+Comment=TontooOS Dark Window Decoration for KDE Plasma
+Icon=preferences-system-windows
+
+X-KDE-PluginInfo-Author=TontooOS
+X-KDE-PluginInfo-Name=TontooOS-dark
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Website=https://github.com/tontoo-os
+X-KDE-PluginInfo-Category=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true

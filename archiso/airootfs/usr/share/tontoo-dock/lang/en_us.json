@@ -1,0 +1,12 @@
+{
+  "apps": {
+    "terminal": {
+      "name": "Terminal",
+      "description": "Open a terminal window"
+    },
+    "settings": {
+      "name": "Settings",
+      "description": "Open system settings"
+    }
+  }
+}

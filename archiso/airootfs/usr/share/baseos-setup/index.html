@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TontooOS Startup</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body data-theme="light">
+    <div id="startup-splash" class="startup-splash is-hidden" aria-hidden="true">
+      <img src="./assets/startup-settings.png" alt="">
+    </div>
+
+    <main id="boot-chooser" class="boot-chooser">
+      <section class="boot-panel" aria-labelledby="boot-title">
+        <img class="boot-main-icon" src="./assets/startup-settings.png" alt="">
+        <h1 id="boot-title" data-i18n="startupTitle">TontooOS</h1>
+        <p class="boot-subtitle" data-i18n="startupSubtitle">Choose how to start this computer.</p>
+        <div class="boot-options">
+          <button id="try-live-button" class="boot-option" type="button">
+            <span class="boot-option-icon octopus-icon">
+              <img src="../pixmaps/tontoo-default.png" alt="">
+            </span>
+            <span>
+              <strong data-i18n="tryTitle">Try TontooOS</strong>
+              <small data-i18n="trySubtitle">Start the live desktop without installing.</small>
+            </span>
+          </button>
+          <button id="install-choice-button" class="boot-option" type="button">
+            <span class="boot-option-icon">
+              <img src="./assets/startup-settings.png" alt="">
+            </span>
+            <span>
+              <strong data-i18n="installChoiceTitle">Install TontooOS</strong>
+              <small data-i18n="installChoiceSubtitle">Open setup and install to a harddrive.</small>
+            </span>
+          </button>
+        </div>
+        <p id="boot-status" class="boot-status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <main id="setup-shell" class="setup-shell hidden">
+      <section class="setup-panel" aria-live="polite">
+        <form id="setup-form" class="setup-form">
+          <section class="setup-step is-active" data-step="0" aria-labelledby="language-title">
+            <h1 id="language-title" data-i18n="languageTitle">System language</h1>
+            <p class="subtitle" data-i18n="languageSubtitle">Choose the language used by this setup.</p>
+            <div class="choice-grid two" role="radiogroup" aria-label="System language">
+              <label class="choice-card">
+                <input type="radio" name="language" value="en" checked>
+                <span class="choice-body">
+                  <strong>English</strong>
+                  <small>United States</small>
+                </span>
+              </label>
+              <label class="choice-card">
+                <input type="radio" name="language" value="de">
+                <span class="choice-body">
+                  <strong>Deutsch</strong>
+                  <small>Deutschland</small>
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section class="setup-step" data-step="1" aria-labelledby="keyboard-title">
+            <h1 id="keyboard-title" data-i18n="keyboardTitle">Keyboard layout</h1>
+            <p class="subtitle" data-i18n="keyboardSubtitle">Select the keyboard map for typing.</p>
+            <div class="choice-grid two" role="radiogroup" aria-label="Keyboard layout">
+              <label class="choice-card">
+                <input type="radio" name="keyboard" value="us" checked>
+                <span class="choice-body">
+                  <strong>US</strong>
+                  <small>QWERTY</small>
+                </span>
+              </label>
+              <label class="choice-card">
+                <input type="radio" name="keyboard" value="de">
+                <span class="choice-body">
+                  <strong>German</strong>
+                  <small>QWERTZ</small>
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section class="setup-step" data-step="2" aria-labelledby="timezone-title">
+            <h1 id="timezone-title" data-i18n="timezoneTitle">Timezone</h1>
+            <p class="subtitle" data-i18n="timezoneSubtitle">Pick your time zone.</p>
+            <label class="field wide">
+              <span data-i18n="timezoneLabel">Timezone</span>
+              <select name="timezone">
+                <option value="Europe/Berlin">Europe/Berlin</option>
+                <option value="UTC">UTC</option>
+                <option value="Europe/London">Europe/London</option>
+                <option value="America/New_York">America/New_York</option>
+                <option value="America/Los_Angeles">America/Los_Angeles</option>
+                <option value="Asia/Tokyo">Asia/Tokyo</option>
+              </select>
+            </label>
+          </section>
+
+          <section class="setup-step" data-step="3" aria-labelledby="network-title">
+            <h1 id="network-title" data-i18n="networkTitle">Network</h1>
+            <p class="subtitle" data-i18n="networkSubtitle">Choose LAN or WLAN.</p>
+            <div class="network-actions">
+              <button class="mode-button is-active" type="button" data-network-mode="lan" data-i18n="useLan">Use LAN</button>
+              <button class="mode-button" type="button" data-network-mode="wlan" data-i18n="useWlan">Use WLAN</button>
+            </div>
+            <input type="hidden" name="networkMode" value="lan">
+            <p id="lan-message" class="lan-status">Lan cable is used</p>
+            <div id="wifi-panel" class="wifi-panel hidden">
+              <div class="wifi-list" role="radiogroup" aria-label="WLAN networks">
+                <label class="wifi-row">
+                  <input type="radio" name="wifiSsid" value="Home-WiFi" checked>
+                  <span><strong>Home-WiFi</strong><small>WPA2</small></span>
+                  <em>88%</em>
+                </label>
+                <label class="wifi-row">
+                  <input type="radio" name="wifiSsid" value="Office-5G">
+                  <span><strong>Office-5G</strong><small>WPA3</small></span>
+                  <em>74%</em>
+                </label>
+                <label class="wifi-row">
+                  <input type="radio" name="wifiSsid" value="Guest-WLAN">
+                  <span><strong>Guest-WLAN</strong><small>Open</small></span>
+                  <em>61%</em>
+                </label>
+                <label class="wifi-row">
+                  <input type="radio" name="wifiSsid" value="CoffeeNet">
+                  <span><strong>CoffeeNet</strong><small>WPA2</small></span>
+                  <em>45%</em>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="setup-step" data-step="4" aria-labelledby="user-title">
+            <h1 id="user-title" data-i18n="userTitle">Create User</h1>
+            <p class="subtitle" data-i18n="userSubtitle">Create a user for your Computer</p>
+            <div class="user-layout">
+              <div>
+                <div class="avatar-preview" aria-live="polite">
+                  <span id="avatar-preview-icon" class="fa-icon" aria-hidden="true">&#xf007;</span>
+                  <strong id="avatar-preview-label" data-i18n="avatarPreview">Icon preview</strong>
+                </div>
+                <span class="field-title" data-i18n="userIcon">User icon</span>
+                <div class="avatar-grid" role="radiogroup" aria-label="User icon">
+                  <label><input type="radio" name="avatar" value="user" data-icon="&#xf007;" data-label="User" checked><span class="avatar fa-icon" aria-hidden="true">&#xf007;</span></label>
+                  <label><input type="radio" name="avatar" value="user-astronaut" data-icon="&#xf4fb;" data-label="Astronaut"><span class="avatar fa-icon" aria-hidden="true">&#xf4fb;</span></label>
+                  <label><input type="radio" name="avatar" value="user-ninja" data-icon="&#xf504;" data-label="Ninja"><span class="avatar fa-icon" aria-hidden="true">&#xf504;</span></label>
+                  <label><input type="radio" name="avatar" value="face-smile" data-icon="&#xf118;" data-label="Smile"><span class="avatar fa-icon" aria-hidden="true">&#xf118;</span></label>
+                  <label><input type="radio" name="avatar" value="code" data-icon="&#xf121;" data-label="Code"><span class="avatar fa-icon" aria-hidden="true">&#xf121;</span></label>
+                  <label><input type="radio" name="avatar" value="terminal" data-icon="&#xf120;" data-label="Terminal"><span class="avatar fa-icon" aria-hidden="true">&#xf120;</span></label>
+                  <label><input type="radio" name="avatar" value="gamepad" data-icon="&#xf11b;" data-label="Gamepad"><span class="avatar fa-icon" aria-hidden="true">&#xf11b;</span></label>
+                  <label><input type="radio" name="avatar" value="music" data-icon="&#xf001;" data-label="Music"><span class="avatar fa-icon" aria-hidden="true">&#xf001;</span></label>
+                  <label><input type="radio" name="avatar" value="palette" data-icon="&#xf53f;" data-label="Palette"><span class="avatar fa-icon" aria-hidden="true">&#xf53f;</span></label>
+                  <label><input type="radio" name="avatar" value="star" data-icon="&#xf005;" data-label="Star"><span class="avatar fa-icon" aria-hidden="true">&#xf005;</span></label>
+                </div>
+                <span class="field-title compact" data-i18n="userColor">Color</span>
+                <div class="color-grid" role="radiogroup" aria-label="User color">
+                  <label><input type="radio" name="avatarColor" value="#dc2626"><span style="--swatch:#dc2626"></span></label>
+                  <label><input type="radio" name="avatarColor" value="#ea580c"><span style="--swatch:#ea580c"></span></label>
+                  <label><input type="radio" name="avatarColor" value="#facc15"><span style="--swatch:#facc15"></span></label>
+                  <label><input type="radio" name="avatarColor" value="#65a30d"><span style="--swatch:#65a30d"></span></label>
+                  <label><input type="radio" name="avatarColor" value="#16a34a"><span style="--swatch:#16a34a"></span></label>
+                  <label><input type="radio" name="avatarColor" value="#0891b2"><span style="--swatch:#0891b2"></span></label>
+                  <label><input type="radio" name="avatarColor" value="#2563eb" checked><span style="--swatch:#2563eb"></span></label>
+                  <label><input type="radio" name="avatarColor" value="#4f46e5"><span style="--swatch:#4f46e5"></span></label>
+                  <label><input type="radio" name="avatarColor" value="#9333ea"><span style="--swatch:#9333ea"></span></label>
+                  <label><input type="radio" name="avatarColor" value="#be123c"><span style="--swatch:#be123c"></span></label>
+                </div>
+              </div>
+              <div class="input-grid">
+                <label class="field">
+                  <span data-i18n="username">Username</span>
+                  <input name="username" autocomplete="username" placeholder="alex" required>
+                </label>
+                <label class="field">
+                  <span data-i18n="firstName">Name</span>
+                  <input name="firstName" autocomplete="given-name" placeholder="Alex" required>
+                </label>
+                <label class="field">
+                  <span data-i18n="computerName">Computer name</span>
+                  <input name="computerName" placeholder="baseos-pc" required>
+                </label>
+                <label class="field">
+                  <span data-i18n="lastName">Last name</span>
+                  <input name="lastName" autocomplete="family-name" placeholder="Morgan" required>
+                </label>
+                <label class="field">
+                  <span data-i18n="password">Password</span>
+                  <input name="password" type="password" autocomplete="new-password" required>
+                </label>
+                <label class="field">
+                  <span data-i18n="passwordRepeat">Confirm password</span>
+                  <input name="passwordRepeat" type="password" autocomplete="new-password" required>
+                </label>
+              </div>
+            </div>
+            <p id="user-warning" class="warning hidden" data-i18n="userRequired">Fill in all user fields before continuing.</p>
+          </section>
+
+          <section class="setup-step" data-step="5" aria-labelledby="theme-title">
+            <h1 id="theme-title" data-i18n="themeTitle">Select your theme</h1>
+            <p class="subtitle" data-i18n="themeSubtitle">Choose your color.</p>
+            <div class="choice-grid two" role="radiogroup" aria-label="Setup theme">
+              <label class="choice-card">
+                <input type="radio" name="theme" value="light" checked>
+                <span class="choice-body">
+                  <strong data-i18n="lightMode">Light</strong>
+                </span>
+              </label>
+              <label class="choice-card">
+                <input type="radio" name="theme" value="dark">
+                <span class="choice-body">
+                  <strong data-i18n="darkMode">Dark</strong>
+                </span>
+              </label>
+            </div>
+            <div class="theme-color-picker">
+              <span class="field-title" data-i18n="themeColor">Color picker</span>
+              <div class="color-grid theme-color-grid" role="radiogroup" aria-label="Theme color">
+                <label><input type="radio" name="themeColor" value="#dc2626"><span style="--swatch:#dc2626"></span></label>
+                <label><input type="radio" name="themeColor" value="#ea580c"><span style="--swatch:#ea580c"></span></label>
+                <label><input type="radio" name="themeColor" value="#facc15"><span style="--swatch:#facc15"></span></label>
+                <label><input type="radio" name="themeColor" value="#65a30d"><span style="--swatch:#65a30d"></span></label>
+                <label><input type="radio" name="themeColor" value="#16a34a"><span style="--swatch:#16a34a"></span></label>
+                <label><input type="radio" name="themeColor" value="#0891b2"><span style="--swatch:#0891b2"></span></label>
+                <label><input type="radio" name="themeColor" value="#2563eb" checked><span style="--swatch:#2563eb"></span></label>
+                <label><input type="radio" name="themeColor" value="#4f46e5"><span style="--swatch:#4f46e5"></span></label>
+                <label><input type="radio" name="themeColor" value="#9333ea"><span style="--swatch:#9333ea"></span></label>
+                <label><input type="radio" name="themeColor" value="#be123c"><span style="--swatch:#be123c"></span></label>
+              </div>
+            </div>
+          </section>
+
+          <section class="setup-step" data-step="6" aria-labelledby="ssh-title">
+            <h1 id="ssh-title" data-i18n="sshTitle">SSH access</h1>
+            <p class="subtitle" data-i18n="sshSubtitle">Configure SSH access.</p>
+            <div class="toggle-list">
+              <label class="toggle-row">
+                <span>
+                  <strong data-i18n="sshEnabled">Enable SSH</strong>
+                  <small data-i18n="sshEnabledHint">Open remote shell access</small>
+                </span>
+                <input type="checkbox" name="sshEnabled">
+              </label>
+              <label class="field">
+                <span data-i18n="sshPort">SSH port</span>
+                <input name="sshPort" type="number" min="1" max="65535" value="22">
+              </label>
+              <label class="toggle-row">
+                <span>
+                  <strong data-i18n="sshRoot">Allow root over SSH</strong>
+                  <small data-i18n="sshRootHint">Permit direct root login</small>
+                </span>
+                <input type="checkbox" name="sshRootLogin">
+              </label>
+            </div>
+            <p id="ssh-warning" class="warning hidden" data-i18n="sshPortInvalid">Enter a valid SSH port from 1 to 65535.</p>
+          </section>
+
+          <section class="setup-step" data-step="7" aria-labelledby="harddrive-title">
+            <h1 id="harddrive-title" data-i18n="harddriveTitle">Select Harddrive</h1>
+            <p class="subtitle" data-i18n="harddriveSubtitle">Choose the harddrive for this computer.</p>
+            <div id="harddrive-list" class="harddrive-list" role="radiogroup" aria-label="Harddrives">
+              <p class="harddrive-status" data-i18n="loadingHarddrives">Loading harddrives...</p>
+            </div>
+            <div class="harddrive-warning" role="alert">
+              <span class="fa-icon" aria-hidden="true">&#xf071;</span>
+              <span>
+                <strong data-i18n="harddriveWarningTitle">Are you sure? This disk will be erased.</strong>
+                <small data-i18n="harddriveWarningBody">Installing will permanently delete all data on this disk.</small>
+              </span>
+            </div>
+            <p id="harddrive-validation" class="warning hidden" data-i18n="installNoHarddrive">Select a harddrive before installing.</p>
+          </section>
+
+          <section id="done-panel" class="setup-step install-panel" data-step="8" aria-labelledby="done-title">
+            <div class="install-hero">
+              <img class="install-logo" src="../pixmaps/tontoo-default.png" alt="">
+              <div>
+                <p class="eyebrow" data-i18n="installEyebrow">Installing</p>
+                <h1 id="done-title" data-i18n="installTitle">Installing TontooOS</h1>
+                <p class="subtitle" data-i18n="installSubtitle">Do not turn off your computer. The computer will restart several times.</p>
+              </div>
+            </div>
+            <div class="install-progress" aria-live="polite">
+              <div class="install-progress-meta">
+                <span id="install-progress-text" data-i18n="installPreparing">Preparing installation</span>
+                <strong id="install-progress-percent">0%</strong>
+              </div>
+              <div class="install-progress-track" aria-hidden="true">
+                <span id="install-progress-bar"></span>
+              </div>
+            </div>
+            <div class="harddrive-warning final-install-warning" role="alert">
+              <span class="fa-icon" aria-hidden="true">&#xf071;</span>
+              <span>
+                <strong data-i18n="finalWarningTitle">The selected disk is being erased.</strong>
+                <small data-i18n="finalWarningBody">Keep the power connected until the installer finishes and restarts the computer.</small>
+              </span>
+            </div>
+            <span class="field-title final-overview-title" data-i18n="overviewTitle">Overview</span>
+            <div class="summary-grid" id="summary-grid"></div>
+            <div class="install-log-panel">
+              <div class="install-log-header">
+                <span class="field-title" data-i18n="installLogTitle">Install log</span>
+                <small data-i18n="installLogHint">Live installer output</small>
+              </div>
+              <pre id="install-log" class="install-log"></pre>
+            </div>
+          </section>
+
+          <nav class="wizard-actions" aria-label="Wizard actions">
+            <lg-button id="back-button" class="secondary-action" data-i18n="back">Back</lg-button>
+            <lg-button id="next-button" class="primary-action" variant="primary" data-i18n="next">Next</lg-button>
+          </nav>
+        </form>
+      </section>
+    </main>
+
+    <script type="module" src="../../local/lib/node_modules/@tontoo-os/liquid-glass/dist/components.js"></script>
+    <script src="./renderer.js"></script>
+  </body>
+</html>
