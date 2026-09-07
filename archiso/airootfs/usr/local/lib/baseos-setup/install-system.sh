@@ -187,15 +187,6 @@ preflight_package_databases() {
   pacman -Sy --noconfirm archlinux-keyring
 }
 
-install_web_assets_into_target() {
-  emit_progress 78 "Installing web assets"
-
-  if [[ -d /usr/local/lib/node_modules/@tontoo-os/liquid-glass ]]; then
-    mkdir -p "${target_mount}/usr/local/lib/node_modules/@tontoo-os"
-    cp -a /usr/local/lib/node_modules/@tontoo-os/liquid-glass "${target_mount}/usr/local/lib/node_modules/@tontoo-os/"
-  fi
-}
-
 install_assets_into_target() {
   emit_progress 82 "Installing system assets"
 
@@ -625,7 +616,6 @@ PasswordAuthentication yes
 EOF
 fi
 
-install_web_assets_into_target
 install_assets_into_target
 install_compositor_into_target
 install_menubar_into_target

@@ -963,27 +963,28 @@ h1 {
   padding: 0 18px;
 }
 
-.wizard-actions lg-button {
+.wizard-actions button {
   min-width: 132px;
-  padding: 0;
+  height: 46px;
+  padding: 0 18px;
   border: 0;
   background: transparent;
   color: inherit;
-  --lg-button-height: 46px;
+  font: inherit;
+  cursor: pointer;
 }
 
-.wizard-actions lg-button.secondary-action {
-  --lg-glass-bg-strong: var(--control);
-  --lg-text: var(--text);
+.wizard-actions button.secondary-action {
+  background: var(--control);
+  color: var(--text);
 }
 
-.wizard-actions lg-button.primary-action {
-  --lg-selection-bg: var(--control-active);
-  --lg-selection-text: var(--control-active-text);
-  --lg-selection-border: var(--control-active);
+.wizard-actions button.primary-action {
+  background: var(--control-active);
+  color: var(--control-active-text);
 }
 
-.wizard-actions lg-button.is-disabled {
+.wizard-actions button.is-disabled {
   visibility: hidden;
   pointer-events: none;
 }

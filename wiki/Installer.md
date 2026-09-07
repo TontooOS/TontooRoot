@@ -33,8 +33,8 @@ ssh_port="$(json_value sshPort 22)"
    stack.
 4. Locale, keyboard, timezone, hostname, users (`/Users/<name>`, `wheel` sudo),
    SSH config and LaunchPad services are written to the target.
-5. `install_web_assets_into_target` copies the staged `liquid-glass` web files;
-   no JavaScript runtime is installed or linked.
+5. System assets (Plymouth theme, icons, sounds, wallpapers) are written to
+   the target; no JavaScript runtime is installed or linked.
 6. GRUB (UEFI + BIOS), a first-boot finalization service and a sanitized
    `install-settings.json` (password fields removed via `python3`) finish the
    install, then the machine reboots.
@@ -49,8 +49,7 @@ copied them to every target system. That runtime, its hook, its
 - Deleted: `airootfs/usr/local/lib/archiso/install-node-runtime.sh`
 - Deleted: `airootfs/etc/pacman.d/hooks/50-install-node-runtime.hook`
 - The Electron setup screen is unaffected because Electron ships its own
-  bundled runtime; build hosts still use their own `nodejs`/`npm` to stage the
-  static `liquid-glass` files.
+  bundled runtime.
 
 ## Usage / Example
 
