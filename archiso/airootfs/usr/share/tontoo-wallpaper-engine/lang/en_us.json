@@ -1,9 +1,0 @@
-{
-  "started": "Wallpaper engine started.",
-  "missing-runtime": "No supported wallpaper runtime found.",
-  "missing-wallpaper": "Wallpaper file does not exist.",
-  "set": "Wallpaper saved.",
-  "reset": "Wallpaper reset.",
-  "status": "Current wallpaper:",
-  "usage": "Usage: tontoo-wallpaper-engine [start|set PATH|reset|status]"
-}
