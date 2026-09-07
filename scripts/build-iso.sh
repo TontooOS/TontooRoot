@@ -43,16 +43,24 @@ work_dir="${ARCHISO_WORKDIR:-/tmp/baseos-archiso-work}"
 
 GITHUB_ORG="${GITHUB_ORG:-TontooOS}"
 
-clone_github_repo() { # clone_github_repo <repo> <dest>
+clone_github_repo() { # clone_github_repo <repo> <dest> [branch]
   local repo="$1"
   local dest="$2"
+  local branch="${3:-}"
   if [[ -e "${dest}" ]]; then
     echo "  exists, skipping: ${dest}"
     return 0
   fi
-  echo "  cloning ${GITHUB_ORG}/${repo} -> ${dest}"
-  if ! git clone --depth 1 "https://github.com/${GITHUB_ORG}/${repo}.git" "${dest}"; then
-    echo "WARNING: clone failed for ${GITHUB_ORG}/${repo}, continuing without it." >&2
+  if [[ -n "${branch}" ]]; then
+    echo "  cloning ${GITHUB_ORG}/${repo} (branch ${branch}) -> ${dest}"
+    if ! git clone --depth 1 -b "${branch}" "https://github.com/${GITHUB_ORG}/${repo}.git" "${dest}"; then
+      echo "WARNING: clone failed for ${GITHUB_ORG}/${repo}, continuing without it." >&2
+    fi
+  else
+    echo "  cloning ${GITHUB_ORG}/${repo} -> ${dest}"
+    if ! git clone --depth 1 "https://github.com/${GITHUB_ORG}/${repo}.git" "${dest}"; then
+      echo "WARNING: clone failed for ${GITHUB_ORG}/${repo}, continuing without it." >&2
+    fi
   fi
 }
 
@@ -65,7 +73,8 @@ if [[ "${GITHUB_ACTIONS_BUILD}" -eq 1 ]]; then
   mkdir -p "${base_dir}/TontooProgramms" "${base_dir}/TontooServices" "${base_dir}/TontooLibs"
   clone_github_repo Compositor "${base_dir}/compositor"
   clone_github_repo FishPerms "${base_dir}/TontooServices/FishPerms"
-  clone_github_repo LaunchPad "${base_dir}/TontooServices/LaunchPad"
+  # LaunchPad daemon lives on the master branch (main holds the client lib).
+  clone_github_repo LaunchPad "${base_dir}/TontooServices/LaunchPad" master
   clone_github_repo LaunchCTL "${base_dir}/TontooProgramms/LaunchCTL"
   clone_github_repo FishRunner "${base_dir}/TontooProgramms/FishRunner"
   clone_github_repo MenuBar "${base_dir}/TontooProgramms/Menubar"

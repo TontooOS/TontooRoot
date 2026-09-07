@@ -34,6 +34,8 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-07: Clone the LaunchPad daemon from the `master` branch
+  (`main` holds the client lib); `clone_github_repo` supports branches.
 - 2026-09-07: Hardened the build: every stage is best-effort now (failing
   clone, missing binary or failed framework warns and continues);
   `build-iso.sh` prints a failed-stage summary after `mkarchiso`.
