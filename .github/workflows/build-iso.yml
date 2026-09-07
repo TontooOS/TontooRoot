@@ -23,6 +23,10 @@ jobs:
     steps:
       - name: Check out BaseOS
         uses: actions/checkout@v4
+        with:
+          # All scripts expect the repo in a folder named BaseOS
+          # (local layout: <workspace>/BaseOS), so keep that layout here.
+          path: BaseOS
 
       - name: Install build dependencies
         run: |
@@ -34,16 +38,16 @@ jobs:
             xorg-xcursorgen
 
       - name: Build ISO
-        run: bash scripts/build-iso.sh --github-actions
+        run: bash BaseOS/scripts/build-iso.sh --github-actions
 
       - name: Prepare release assets
         id: assets
         run: |
           set -euo pipefail
-          iso_src="$(ls out/*.iso | head -n 1)"
+          iso_src="$(ls BaseOS/out/*.iso | head -n 1)"
           iso_name="tontoos-${{ inputs.version }}-x86_64.iso"
-          mv "${iso_src}" "out/${iso_name}"
-          cd out
+          mv "${iso_src}" "BaseOS/out/${iso_name}"
+          cd BaseOS/out
           # GitHub release files are limited to 2 GiB each: split larger ISOs.
           if [[ "$(stat -c%s "${iso_name}")" -gt $((1800 * 1024 * 1024)) ]]; then
             split -b 1800M --numeric-suffixes=1 --suffix-length=2 \
@@ -56,7 +60,7 @@ jobs:
       - name: Create release
         run: |
           set -euo pipefail
-          cd out
+          cd BaseOS/out
           gh release create "${{ inputs.version }}" tontoos-* \
             --title "TontooOS ${{ inputs.version }}" \
             --notes "TontooOS BaseOS live ISO ${{ inputs.version }} (commit ${{ github.sha }}). If the ISO is split into .part-N files, rejoin with: cat <name>.part-* > <name>."
