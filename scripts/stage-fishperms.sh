@@ -23,7 +23,7 @@ script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 base_dir="$(cd -- "${script_dir}/../.." && pwd)"
 fishperms_dir="${base_dir}/TontooServices/FishPerms"
 dest_dir="${base_dir}/BaseOS/archiso/airootfs/usr/bin"
-service_dest_dir="${base_dir}/BaseOS/archiso/airootfs/Library/System/Launchpads"
+service_dest_dir="${base_dir}/BaseOS/archiso/airootfs/System/services"
 
 if ! command -v cargo >/dev/null 2>&1; then
   echo "stage-fishperms: cargo not found; skipping FishPerms build" >&2

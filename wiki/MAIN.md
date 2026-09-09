@@ -34,6 +34,10 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-08: Stage SystemOverview into the ISO (`stage-systemoverview.sh`):
+  extracted folder at `/System/Applications/systemoverview.app`,
+  `~/Applications/SystemOverview.app` skel link, installer copy,
+  profiledef permissions and FishPerms trust via `/System/Applications/**`.
 - 2026-09-07: Clone the LaunchPad daemon from the `master` branch
   (`main` holds the client lib); `clone_github_repo` supports branches.
 - 2026-09-07: Hardened the build: every stage is best-effort now (failing

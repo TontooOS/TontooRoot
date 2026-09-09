@@ -246,8 +246,8 @@ install_compositor_into_target() {
   chmod 0755 "${target_mount}/usr/bin/tontoo-compositor" 2>/dev/null || true
 
   # Install LaunchPad service for compositor
-  mkdir -p "${target_mount}/Library/System/Launchpads"
-  cat > "${target_mount}/Library/System/Launchpads/compositor.service" <<EOF
+  mkdir -p "${target_mount}/System/services"
+  cat > "${target_mount}/System/services/compositor.service" <<EOF
 name: compositor
 execute: /usr/bin/tontoo-compositor
 type: sys
@@ -281,8 +281,8 @@ install_menubar_into_target() {
 
   # Install LaunchPad service for menubar (per-user on installed systems,
   # which is the multi-user-ready form of the live `liveuser` service)
-  mkdir -p "${target_mount}/Library/System/Launchpads"
-  cat > "${target_mount}/Library/System/Launchpads/menubar.service" <<EOF
+  mkdir -p "${target_mount}/System/services"
+  cat > "${target_mount}/System/services/menubar.service" <<EOF
 name: menubar
 execute: /usr/local/bin/start-menubar.sh
 type: sys
@@ -292,6 +292,24 @@ depends_on:
   - live-setup
 restart: true
 EOF
+}
+
+install_systemoverview_into_target() {
+  emit_progress 83 "Installing system overview"
+
+  # systemoverview.app bundle (About window, built with TBuild)
+  if [[ -d /System/Applications/systemoverview.app ]]; then
+    mkdir -p "${target_mount}/System/Applications"
+    cp -a /System/Applications/systemoverview.app "${target_mount}/System/Applications/systemoverview.app"
+    chmod 0755 "${target_mount}/System/Applications/systemoverview.app/App/systemoverview" 2>/dev/null || true
+  fi
+
+  # Per-user link ~/Applications/SystemOverview.app (matches the live
+  # session, where it arrives via /etc/skel)
+  install -d -m 0755 "${target_mount}/Users/${username}/Applications"
+  ln -sfn /System/Applications/systemoverview.app "${target_mount}/Users/${username}/Applications/SystemOverview.app"
+  arch-chroot "$target_mount" chown -h "${username}:${username}" "/Users/${username}/Applications/SystemOverview.app"
+  arch-chroot "$target_mount" chown "${username}:${username}" "/Users/${username}/Applications"
 }
 
 install_fishperms_into_target() {
@@ -323,11 +341,11 @@ install_fishperms_into_target() {
   fi
 
   # LaunchPad services: binfmt registration + integrity locks at boot
-  mkdir -p "${target_mount}/Library/System/Launchpads"
+  mkdir -p "${target_mount}/System/services"
   for svc in FishPerms tapp-binfmt; do
-    if [[ -f "/Library/System/Launchpads/${svc}.service" ]]; then
-      cp -a "/Library/System/Launchpads/${svc}.service" \
-        "${target_mount}/Library/System/Launchpads/${svc}.service"
+    if [[ -f "/System/services/${svc}.service" ]]; then
+      cp -a "/System/services/${svc}.service" \
+        "${target_mount}/System/services/${svc}.service"
     fi
   done
 }
@@ -345,7 +363,7 @@ EOF
   fi
 
   if [[ -f "${target_mount}/etc/default/grub" ]]; then
-    sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3 rd.udev.log_level=3 vt.global_cursor_default=0 nowatchdog plymouth.ignore-serial-consoles init=\/usr\/bin\/launchpad-daemon"/' "${target_mount}/etc/default/grub"
+    sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3 rd.udev.log_level=3 vt.global_cursor_default=0 nowatchdog plymouth.ignore-serial-consoles init=\/usr\/bin\/launchpad-daemon --services-dir \/System\/services"/' "${target_mount}/etc/default/grub"
   fi
 
   arch-chroot "$target_mount" mkinitcpio -P
@@ -361,11 +379,11 @@ configure_first_boot_reboot() {
   chmod 0755 "${target_mount}/usr/bin/launchctl" 2>/dev/null || true
 
   # Install LaunchPad service YAMLs
-  mkdir -p "${target_mount}/Library/System/Launchpads"
+  mkdir -p "${target_mount}/System/services"
   for svc in seatd dbus networkmanager pipewire pipewire-pulse wireplumber FishPerms tapp-binfmt; do
-    if [[ -f "/Library/System/Launchpads/${svc}.service" ]]; then
-      cp -a "/Library/System/Launchpads/${svc}.service" \
-        "${target_mount}/Library/System/Launchpads/${svc}.service"
+    if [[ -f "/System/services/${svc}.service" ]]; then
+      cp -a "/System/services/${svc}.service" \
+        "${target_mount}/System/services/${svc}.service"
     fi
   done
 
@@ -607,11 +625,11 @@ if [[ -d /usr/share/launchpad/lang ]]; then
 fi
 
 # Install LaunchPad service YAMLs
-mkdir -p "${target_mount}/Library/System/Launchpads"
+mkdir -p "${target_mount}/System/services"
 for svc in seatd dbus networkmanager pipewire pipewire-pulse wireplumber compositor menubar FishPerms tapp-binfmt; do
-    if [[ -f "/Library/System/Launchpads/${svc}.service" ]]; then
-      cp -a "/Library/System/Launchpads/${svc}.service" \
-        "${target_mount}/Library/System/Launchpads/${svc}.service"
+    if [[ -f "/System/services/${svc}.service" ]]; then
+      cp -a "/System/services/${svc}.service" \
+        "${target_mount}/System/services/${svc}.service"
     fi
   done
 
@@ -628,6 +646,7 @@ fi
 install_assets_into_target
 install_compositor_into_target
 install_menubar_into_target
+install_systemoverview_into_target
 install_fishperms_into_target
 configure_boot_splash_into_target
 

@@ -25,9 +25,49 @@ done
 if ! ls "$XDG_RUNTIME_DIR"/wayland-* >/dev/null 2>&1; then
   echo "start-menubar: no wayland socket in $XDG_RUNTIME_DIR after 15s" >&2
 fi
-# Wayland session environment for the menubar client
+# Derive WAYLAND_DISPLAY from the actual socket. GTK (and most Wayland
+# clients) require WAYLAND_DISPLAY to be set - without it the menubar
+# dies with "Failed to open display" and launchpad restarts it in a
+# tight crash loop (this wedged the whole guest on earlier ISOs).
+if [ -z "${WAYLAND_DISPLAY:-}" ]; then
+  for _sock in "$XDG_RUNTIME_DIR"/wayland-*; do
+    case "$_sock" in
+      *.lock) continue ;;
+    esac
+    export WAYLAND_DISPLAY="$(basename "$_sock")"
+    break
+  done
+  unset _sock
+fi
+echo "start-menubar: WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-<unset>} XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR" >&2
+# The menubar positions itself via X11 (XMoveWindow, like the Dock), so it
+# must run on XWayland: wait for the X11 socket and export DISPLAY. The
+# compositor's XWM honors client moves (configure_request -> space
+# reposition). Plain Wayland (xdg toplevel) has no client positioning, the
+# bar would be pinned at the compositor's default spot.
+for i in $(seq 1 30); do
+  if ls /tmp/.X11-unix/X* >/dev/null 2>&1; then
+    break
+  fi
+  sleep 0.5
+done
+if [ -z "${DISPLAY:-}" ]; then
+  for _xsock in /tmp/.X11-unix/X*; do
+    _dpy=":${_xsock#/tmp/.X11-unix/X}"
+    case "$_dpy" in
+      *'*'*|*']'*) continue ;;
+    esac
+    export DISPLAY="$_dpy"
+    break
+  done
+  unset _xsock _dpy
+fi
+echo "start-menubar: DISPLAY=${DISPLAY:-<unset>}" >&2
+# Wayland session environment for the menubar client. Layer-shell on
+# Wayland pins the bar at (0,0) full-width with alpha blending; the X11
+# path above stays as fallback inside the app.
 export XDG_CURRENT_DESKTOP="${XDG_CURRENT_DESKTOP:-TontooOS}"
 export XDG_SESSION_TYPE=wayland
-export GDK_BACKEND="${GDK_BACKEND:-wayland,x11}"
+export GDK_BACKEND="${GDK_BACKEND:-wayland}"
 echo "start-menubar: launching /System/Applications/Menubar.app" >&2
 exec /usr/bin/tapp /System/Applications/Menubar.app

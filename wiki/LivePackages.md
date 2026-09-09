@@ -23,7 +23,7 @@ chromium --version
 Fresh live boots used to fail with `keyring is not writable` and `required key
 missing from keyring` because `/etc/pacman.d/gnupg` did not exist yet. Every
 live boot now runs `enable-live-desktop.sh` through the `live-setup` LaunchPad
-service (`Library/System/Launchpads/live-setup.service`, type `sys`, user
+service (`System/services/live-setup.service`, type `sys`, user
 `root`), which performs two idempotent steps before anything else:
 
 | Step | Function | Behavior |

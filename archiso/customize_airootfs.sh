@@ -46,7 +46,7 @@ SoundThemeName=tontoosounds
 EOF
 
 # Ensure LaunchPad services directory exists
-mkdir -p Library/System/Launchpads
+mkdir -p System/services
 
 # Ensure machine-id is empty so systemd generates a fresh one on boot
 # (prevents dconf "Cannot spawn a message bus without a machine-id")

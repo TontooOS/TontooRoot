@@ -27,6 +27,8 @@ archiso/airootfs/usr/bin/launchctl
 archiso/airootfs/Library/System/*.library
 archiso/airootfs/Libraries/TontooUI/
 archiso/airootfs/System/Applications/Menubar.app/
+archiso/airootfs/System/Applications/systemoverview.app/
+archiso/airootfs/etc/skel/Applications/SystemOverview.app
 archiso/airootfs/usr/local/lib/node_modules/
 archiso/airootfs/usr/share/tapp/lang/
 archiso/airootfs/usr/share/launchpad/lang/
