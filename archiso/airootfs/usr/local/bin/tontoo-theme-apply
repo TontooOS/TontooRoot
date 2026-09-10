@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+# tontoo-theme-apply — push ~/.config/tontoo/theme.conf to every toolkit.
+#
+# Single place that themes the whole OS. Source of truth:
+#   ~/.config/tontoo/theme.conf  (one line:  color-scheme=dark|light)
+# Called at session start (theme.service, best effort) and by Settings
+# after a toggle (with a session bus, so gsettings fully applies).
+# Idempotent: run it any number of times. Never touches decoration
+# layout or button order — traffic lights stay fixed (close,minimize,maximize:).
+#
+# Sinks (best effort each, failures never abort the rest):
+#   GTK2/3/4 ..... settings.ini + .gtkrc-2.0 + gsettings
+#   Qt5/Qt6 ...... qt5ct/qt6ct.conf (Fusion + TontooOS palette + MacTahoe icons + SF Pro)
+#   Portal ....... gsettings color-scheme/accent (xdg-desktop-portal-gtk serves it)
+#   Chromium ..... ~/.config/chromium-flags.conf (Wayland auto-select)
+#   Flatpak ...... vendor-recommended filesystem overrides (only if flatpak exists)
+set -u
+
+THEME_CONF="${HOME}/.config/tontoo/theme.conf"
+MODE="dark"
+if [[ -f "${THEME_CONF}" ]]; then
+  case "$(tr '[:upper:]' '[:lower:]' < "${THEME_CONF}" | tr -d '\n\r\t ')" in
+    *light*) MODE="light" ;;
+    *dark*) MODE="dark" ;;
+  esac
+fi
+
+if [[ "${MODE}" == "dark" ]]; then
+  GTK_THEME="TontooOS-Dark"
+  COLOR_SCHEME="prefer-dark"
+  CURSOR_THEME="MacTahoe-dark-cursors"
+  QT_COLORS="TontooOS-Dark"
+  PREFER_DARK_INI=1
+else
+  GTK_THEME="TontooOS-Light"
+  COLOR_SCHEME="prefer-light"
+  CURSOR_THEME="MacTahoe-cursors"
+  QT_COLORS="TontooOS-Light"
+  PREFER_DARK_INI=0
+fi
+ICON_THEME="MacTahoe"
+FONT_UI="SF Pro Display 10"
+FONT_MONO="SF Pro Text 10"
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+# --- gsettings (needs a session bus; skipped silently without one) ---
+if have gsettings; then
+  gsettings set org.gnome.desktop.interface gtk-theme "${GTK_THEME}" || true
+  gsettings set org.gnome.desktop.interface color-scheme "'${COLOR_SCHEME}'" || true
+  gsettings set org.gnome.desktop.interface icon-theme "${ICON_THEME}" || true
+  gsettings set org.gnome.desktop.interface cursor-theme "${CURSOR_THEME}" || true
+  gsettings set org.gnome.desktop.interface cursor-size 24 || true
+  gsettings set org.gnome.desktop.interface font-name "${FONT_UI}" || true
+  gsettings set org.gnome.desktop.interface document-font-name "${FONT_UI}" || true
+  gsettings set org.gnome.desktop.interface monospace-font-name "${FONT_MONO}" || true
+  gsettings set org.gnome.desktop.interface accent-color 'orange' || true
+  # Fixed macOS traffic-light order; set once, kept on every run.
+  gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:' || true
+fi
+
+# --- GTK 3/4 settings.ini (read directly by GTK apps, no bus needed) ---
+for ver in 3.0 4.0; do
+  dir="${HOME}/.config/gtk-${ver}"
+  mkdir -p "${dir}" 2>/dev/null || continue
+  cat > "${dir}/settings.ini" <<EOF
+[Settings]
+gtk-theme-name=${GTK_THEME}
+gtk-icon-theme-name=${ICON_THEME}
+gtk-cursor-theme-name=${CURSOR_THEME}
+gtk-cursor-theme-size=24
+gtk-font-name=${FONT_UI}
+gtk-decoration-layout=close,minimize,maximize:
+gtk-application-prefer-dark-theme=${PREFER_DARK_INI}
+EOF
+done
+
+# --- GTK2 fallback ---
+{
+  printf 'gtk-theme-name="%s"\n' "${GTK_THEME}"
+  printf 'gtk-icon-theme-name="%s"\n' "${ICON_THEME}"
+  printf 'gtk-font-name="%s"\n' "${FONT_UI}"
+} > "${HOME}/.gtkrc-2.0" 2>/dev/null || true
+
+# --- Qt5/Qt6 via qt5ct/qt6ct: Fusion + TontooOS palette + icons + fonts ---
+write_qt_colors() { # <dir> (e.g. ~/.config/qt5ct)
+  local dir="$1"
+  mkdir -p "${dir}/colors" 2>/dev/null || return 0
+  # 22 QPalette roles: WindowText Button Light Midlight Dark Mid Text
+  # BrightText ButtonText Base Window Shadow Highlight HighlightedText Link
+  # LinkVisited AlternateBase NoRole ToolTipBase ToolTipText
+  # PlaceholderText Accent
+  cat > "${dir}/colors/TontooOS-Dark.conf" <<'EOF'
+[ColorScheme]
+active_colors=#ffeeeeee, #ff2d2d2d, #ff3a3a3a, #ff262626, #ff0f0f0f, #ff1d1d1d, #ffeeeeee, #ffffffff, #ffeeeeee, #ff1d1d1d, #ff1d1d1d, #ff000000, #ffff6b2b, #ffffffff, #ff4aa3ff, #ff9a7bff, #ff242424, #ffffffff, #ff2d2d2d, #ffeeeeee, #80a0a0a0, #ffff6b2b
+inactive_colors=#ffb0b0b0, #ff242424, #ff2d2d2d, #ff1d1d1d, #ff0a0a0a, #ff161616, #ffb0b0b0, #ffb0b0b0, #ffb0b0b0, #ff161616, #ff161616, #ff000000, #ff8a5a2b, #ffeeeeee, #ff4aa3ff, #ff9a7bff, #ff1d1d1d, #ffffffff, #ff242424, #ffb0b0b0, #80666666, #ff8a5a2b
+disabled_colors=#ff777777, #ff1d1d1d, #ff242424, #ff161616, #ff0a0a0a, #ff141414, #ff777777, #ff777777, #ff777777, #ff141414, #ff141414, #ff000000, #ff555555, #ff999999, #ff4aa3ff, #ff9a7bff, #ff1d1d1d, #ffffffff, #ff242424, #ff999999, #80666666, #ff555555
+EOF
+  cat > "${dir}/colors/TontooOS-Light.conf" <<'EOF'
+[ColorScheme]
+active_colors=#ff1d1d1d, #ffececec, #ffffffff, #fff5f5f5, #ffb0b0b0, #ffd8d8d8, #ff1d1d1d, #ffffffff, #ff1d1d1d, #ffffffff, #ffececec, #ff808080, #ffff6b2b, #ffffffff, #ff0b57d0, #ff8e44ad, #fff7f7f7, #ff000000, #ff2d2d2d, #ffeeeeee, #80666666, #ffff6b2b
+inactive_colors=#ff555555, #ffe2e2e2, #fff5f5f5, #ffececec, #ffa0a0a0, #ffd0d0d0, #ff555555, #ffffffff, #ff555555, #fff5f5f5, #ffe2e2e2, #ff808080, #ffcf8a4b, #ffffffff, #ff0b57d0, #ff8e44ad, #ffececec, #ff000000, #ff2d2d2d, #ffeeeeee, #80888888, #ffcf8a4b
+disabled_colors=#ff999999, #ffe4e4e4, #fff0f0f0, #ffe8e8e8, #ffb8b8b8, #ffd4d4d4, #ff999999, #ffffffff, #ff999999, #fff0f0f0, #ffe4e4e4, #ff909090, #ffb0b0b0, #ff777777, #ff0b57d0, #ff8e44ad, #ffe8e8e8, #ff000000, #ff2d2d2d, #ffbbbbbb, #80aaaaaa, #ffb0b0b0
+EOF
+}
+write_qt_conf() { # <dir> <file>
+  local dir="$1" file="$2"
+  mkdir -p "${dir}" 2>/dev/null || return 0
+  cat > "${dir}/${file}" <<EOF
+[Appearance]
+color_scheme_path=${dir}/colors/${QT_COLORS}.conf
+custom_palette=true
+icon_theme=${ICON_THEME}
+standard_dialogs=default
+style=Fusion
+[Fonts]
+fixed=${FONT_MONO}
+general=${FONT_UI}
+EOF
+}
+write_qt_colors "${HOME}/.config/qt5ct"
+write_qt_colors "${HOME}/.config/qt6ct"
+write_qt_conf "${HOME}/.config/qt5ct" "qt5ct.conf"
+write_qt_conf "${HOME}/.config/qt6ct" "qt6ct.conf"
+
+# --- Chromium: prefer Wayland when available, fall back to X11 ---
+printf '%s\n' '--ozone-platform-hint=auto' > "${HOME}/.config/chromium-flags.conf" 2>/dev/null || true
+
+# --- Flatpak: let sandboxed apps see the system GTK configs (vendor advice) ---
+if have flatpak; then
+  flatpak override --user --filesystem=xdg-config/gtk-3.0:ro >/dev/null 2>&1 || true
+  flatpak override --user --filesystem=xdg-config/gtk-4.0:ro >/dev/null 2>&1 || true
+fi
+
+exit 0

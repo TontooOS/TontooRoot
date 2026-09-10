@@ -294,6 +294,26 @@ restart: true
 EOF
 }
 
+install_theme_into_target() {
+  emit_progress 83 "Installing system theme"
+
+  # Theme applier (single place that themes every toolkit)
+  copy_if_exists /usr/local/bin/tontoo-theme-apply /usr/local/bin/tontoo-theme-apply
+  chmod 0755 "${target_mount}/usr/local/bin/tontoo-theme-apply" 2>/dev/null || true
+
+  # LaunchPad service: apply theme once per boot (per-user form)
+  mkdir -p "${target_mount}/System/services"
+  cat > "${target_mount}/System/services/theme.service" <<EOF
+name: theme
+execute: /usr/local/bin/tontoo-theme-apply
+type: sys
+user: ${username}
+depends_on:
+  - dbus
+restart: false
+EOF
+}
+
 install_systemoverview_into_target() {
   emit_progress 83 "Installing system overview"
 
@@ -646,6 +666,7 @@ fi
 install_assets_into_target
 install_compositor_into_target
 install_menubar_into_target
+install_theme_into_target
 install_systemoverview_into_target
 install_fishperms_into_target
 configure_boot_splash_into_target

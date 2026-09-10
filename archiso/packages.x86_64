@@ -6,6 +6,8 @@ bash
 chromium
 curl
 dbus-broker
+dconf
+gsettings-desktop-schemas
 dosfstools
 e2fsprogs
 efibootmgr
@@ -61,6 +63,9 @@ wayland
 wireplumber
 wl-clipboard
 xdg-desktop-portal
+xdg-desktop-portal-gtk
+qt5ct
+qt6ct
 foot
 xdg-user-dirs
 xdg-utils

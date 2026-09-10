@@ -1,0 +1,7 @@
+name: theme
+execute: /usr/local/bin/tontoo-theme-apply
+type: sys
+user: liveuser
+depends_on:
+  - dbus
+restart: false

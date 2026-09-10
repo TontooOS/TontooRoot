@@ -59,6 +59,10 @@ if pgrep -f '[p]lymouthd' >/dev/null 2>&1; then
   echo "start-compositor: WARNING plymouthd still alive, compositor DRM modeset may fail" >&2
 fi
 sleep 0.2
+# Apply the system theme to every toolkit before apps start (best effort).
+if [ -x /usr/local/bin/tontoo-theme-apply ]; then
+  /usr/local/bin/tontoo-theme-apply >/dev/null 2>&1 || true
+fi
 echo "start-compositor: launching /usr/bin/tontoo-compositor" >&2
 # Clean stale wayland locks if compositor crashed
 if [ -n "${XDG_RUNTIME_DIR:-}" ] && [ -d "$XDG_RUNTIME_DIR" ]; then
