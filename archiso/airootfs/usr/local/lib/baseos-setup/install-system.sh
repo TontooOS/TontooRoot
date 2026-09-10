@@ -203,6 +203,8 @@ install_assets_into_target() {
   copy_if_exists /etc/X11/xorg.conf.d/90-cursor-theme.conf /etc/X11/xorg.conf.d/90-cursor-theme.conf
   copy_if_exists /etc/gtk-3.0/settings.ini /etc/gtk-3.0/settings.ini
   copy_if_exists /etc/gtk-4.0/settings.ini /etc/gtk-4.0/settings.ini
+  copy_if_exists /etc/foot/foot.ini /etc/foot/foot.ini
+  copy_if_exists /etc/fonts/conf.d/10-tontoo-sfpro.conf /etc/fonts/conf.d/10-tontoo-sfpro.conf
 
   # Wallpapers + backgrounds
   copy_if_exists /System/User/Wallpapers /System/User/Wallpapers
