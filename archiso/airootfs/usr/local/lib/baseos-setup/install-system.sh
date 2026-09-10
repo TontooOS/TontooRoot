@@ -205,6 +205,7 @@ install_assets_into_target() {
   copy_if_exists /etc/gtk-4.0/settings.ini /etc/gtk-4.0/settings.ini
 
   # Wallpapers + backgrounds
+  copy_if_exists /System/User/Wallpapers /System/User/Wallpapers
   copy_if_exists /usr/share/backgrounds /usr/share/backgrounds
   copy_if_exists /usr/share/wallpapers /usr/share/wallpapers
 
@@ -341,6 +342,44 @@ install_aboutthisapp_into_target() {
     mkdir -p "${target_mount}/System/Applications"
     cp -a /System/Applications/AboutThisApp.app "${target_mount}/System/Applications/AboutThisApp.app"
     chmod 0755 "${target_mount}/System/Applications/AboutThisApp.app/App/"* 2>/dev/null || true
+  fi
+}
+
+install_weather_into_target() {
+  emit_progress 83 "Installing weather app"
+
+  # Weather.app bundle (user-facing app, built with TBuild).
+  # Lives at top-level /Applications, not /System/Applications.
+  # No symlink, no service: launched on demand via tapp.
+  if [[ -d /Applications/Weather.app ]]; then
+    mkdir -p "${target_mount}/Applications"
+    cp -a /Applications/Weather.app "${target_mount}/Applications/Weather.app"
+    chmod 0755 "${target_mount}/Applications/Weather.app/App/weather" 2>/dev/null || true
+  fi
+
+  # Weather language files (fallback lookup path of the app)
+  if [[ -d /usr/share/weather/lang ]]; then
+    mkdir -p "${target_mount}/usr/share/weather/lang"
+    cp -a /usr/share/weather/lang/. "${target_mount}/usr/share/weather/lang/"
+  fi
+}
+
+install_terminal_into_target() {
+  emit_progress 83 "Installing terminal app"
+
+  # Terminal.app bundle (user-facing app, built with TBuild).
+  # Lives at top-level /Applications, not /System/Applications.
+  # No symlink, no service: launched on demand via tapp.
+  if [[ -d /Applications/Terminal.app ]]; then
+    mkdir -p "${target_mount}/Applications"
+    cp -a /Applications/Terminal.app "${target_mount}/Applications/Terminal.app"
+    chmod 0755 "${target_mount}/Applications/Terminal.app/App/terminal" 2>/dev/null || true
+  fi
+
+  # Terminal language files and prompt (fallback lookup paths of the app)
+  if [[ -d /usr/share/terminal ]]; then
+    mkdir -p "${target_mount}/usr/share/terminal"
+    cp -a /usr/share/terminal/. "${target_mount}/usr/share/terminal/"
   fi
 }
 
@@ -681,6 +720,8 @@ install_menubar_into_target
 install_theme_into_target
 install_systemoverview_into_target
 install_aboutthisapp_into_target
+install_weather_into_target
+install_terminal_into_target
 install_fishperms_into_target
 configure_boot_splash_into_target
 

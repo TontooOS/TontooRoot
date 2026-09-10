@@ -15,6 +15,7 @@ boot and desktop path before branded layers are added.
 | Rules | [RULE.md](RULE.md) | Development and usage rules |
 | LivePackages | [LivePackages.md](LivePackages.md) | Live ISO packages and pacman keyring self-heal |
 | Installer | [Installer.md](Installer.md) | Destructive Arch installer, Python config parsing |
+| Wallpapers | [Wallpapers.md](Wallpapers.md) | Wallpaper packs at `/System/User/Wallpapers` and staging |
 
 ## Quick Start
 
@@ -34,6 +35,16 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-10: Stage wallpaper packs to `/System/User/Wallpapers/`
+  (`stage-wallpapers.sh`): all packs copied to the new canonical path,
+  compositor default points there, legacy `/usr/share/tontoo/wallpapers`
+  kept as a compatibility symlink, installer copy, profiledef permissions
+  and gitignore updated. See [Wallpapers.md](Wallpapers.md).
+- 2026-09-10: Stage Weather into the ISO (`stage-weather.sh`): TBuild bundle
+  extracted as a folder at `/Applications/Weather.app` (top-level path, no
+  symlink, no service), language fallback at `/usr/share/weather/lang`,
+  installer copy, profiledef permissions and FishPerms trust via
+  `/Applications/**`.
 - 2026-09-10: Stage AboutThisApp into the ISO (`stage-aboutthisapp.sh`):
   TBuild bundle extracted as a folder at `/System/Applications/AboutThisApp.app`
   (no symlink, no service), installer copy, profiledef permissions and

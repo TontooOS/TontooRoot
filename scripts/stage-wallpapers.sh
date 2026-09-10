@@ -16,7 +16,8 @@ script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 base_dir="$(cd -- "${script_dir}/../.." && pwd)"
 wallpapers_dir="${base_dir}/BaseOS/wallpapers"
 profile_dir="${base_dir}/BaseOS/archiso"
-target_dir="${profile_dir}/airootfs/usr/share/tontoo/wallpapers"
+target_dir="${profile_dir}/airootfs/System/User/Wallpapers"
+legacy_dir="${profile_dir}/airootfs/usr/share/tontoo/wallpapers"
 
 if [[ ! -d "${wallpapers_dir}" ]]; then
   echo "Wallpapers directory not found at ${wallpapers_dir}." >&2
@@ -43,5 +44,12 @@ for category_dir in "${wallpapers_dir}"/*/; do
   done
 done
 
-echo "Staged wallpapers -> /usr/share/tontoo/wallpapers"
+echo "Staged wallpapers -> /System/User/Wallpapers"
 echo "  Categories: $(ls -1 "${target_dir}" | tr '\n' ' ')"
+
+# Compatibility: keep the legacy path working as a symlink to the new
+# canonical location.
+rm -rf "${legacy_dir}"
+mkdir -p "$(dirname -- "${legacy_dir}")"
+ln -sfn /System/User/Wallpapers "${legacy_dir}"
+echo "Linked legacy path /usr/share/tontoo/wallpapers -> /System/User/Wallpapers"

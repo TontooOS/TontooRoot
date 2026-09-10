@@ -11,7 +11,8 @@ vm/
 # TontooProgramms/Menubar, TontooLibs). Do not commit them.
 archiso/airootfs/usr/share/fonts/OTF/
 archiso/airootfs/usr/share/fonts/TTF/
-archiso/airootfs/usr/share/tontoo/wallpapers/
+archiso/airootfs/System/User/Wallpapers/
+archiso/airootfs/usr/share/tontoo/wallpapers
 archiso/airootfs/usr/share/icons/MacTahoe-cursors/
 archiso/airootfs/usr/share/icons/MacTahoe-dark-cursors/
 archiso/airootfs/usr/share/themes/MacTahoe-*/
@@ -34,6 +35,11 @@ archiso/airootfs/usr/local/lib/node_modules/
 archiso/airootfs/usr/share/tapp/lang/
 archiso/airootfs/usr/share/launchpad/lang/
 archiso/airootfs/usr/share/tontoo/menubar/lang/
+archiso/airootfs/Applications/Terminal.app/
+archiso/airootfs/Applications/Weather.app/
+archiso/airootfs/usr/share/terminal/lang/
+archiso/airootfs/usr/share/terminal/tontoo-prompt.zsh
+archiso/airootfs/usr/share/weather/lang/
 
 # Generated SSH host keys (stage-sshd.sh recreates them). Never commit keys.
 archiso/airootfs/etc/ssh/ssh_host_*
