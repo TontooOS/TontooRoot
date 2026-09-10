@@ -332,6 +332,18 @@ install_systemoverview_into_target() {
   arch-chroot "$target_mount" chown "${username}:${username}" "/Users/${username}/Applications"
 }
 
+install_aboutthisapp_into_target() {
+  emit_progress 83 "Installing about window"
+
+  # AboutThisApp.app bundle (About window, built with TBuild).
+  # No symlink, no service: launched on demand via tapp.
+  if [[ -d /System/Applications/AboutThisApp.app ]]; then
+    mkdir -p "${target_mount}/System/Applications"
+    cp -a /System/Applications/AboutThisApp.app "${target_mount}/System/Applications/AboutThisApp.app"
+    chmod 0755 "${target_mount}/System/Applications/AboutThisApp.app/App/"* 2>/dev/null || true
+  fi
+}
+
 install_fishperms_into_target() {
   emit_progress 85 "Installing system protection"
 
@@ -668,6 +680,7 @@ install_compositor_into_target
 install_menubar_into_target
 install_theme_into_target
 install_systemoverview_into_target
+install_aboutthisapp_into_target
 install_fishperms_into_target
 configure_boot_splash_into_target
 

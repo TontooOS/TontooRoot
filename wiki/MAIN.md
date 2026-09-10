@@ -34,6 +34,10 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-10: Stage AboutThisApp into the ISO (`stage-aboutthisapp.sh`):
+  TBuild bundle extracted as a folder at `/System/Applications/AboutThisApp.app`
+  (no symlink, no service), installer copy, profiledef permissions and
+  FishPerms trust via `/System/Applications/**`.
 - 2026-09-08: Stage SystemOverview into the ISO (`stage-systemoverview.sh`):
   extracted folder at `/System/Applications/systemoverview.app`,
   `~/Applications/SystemOverview.app` skel link, installer copy,
