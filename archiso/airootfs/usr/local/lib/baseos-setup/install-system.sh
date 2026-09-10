@@ -297,6 +297,41 @@ restart: true
 EOF
 }
 
+install_dock_into_target() {
+  emit_progress 83 "Installing system dock"
+
+  # Dock.app system bundle (external bottom dock, built with TBuild)
+  if [[ -d /System/Applications/Dock.app ]]; then
+    mkdir -p "${target_mount}/System/Applications"
+    cp -a /System/Applications/Dock.app "${target_mount}/System/Applications/Dock.app"
+    chmod 0755 "${target_mount}/System/Applications/Dock.app/App/dock" 2>/dev/null || true
+  fi
+
+  # Dock starter (waits for the compositor Wayland socket, then tapp)
+  copy_if_exists /usr/local/bin/start-dock.sh /usr/local/bin/start-dock.sh
+  chmod 0755 "${target_mount}/usr/local/bin/start-dock.sh" 2>/dev/null || true
+
+  # Dock language files
+  if [[ -d /usr/share/tontoo/dock/lang ]]; then
+    mkdir -p "${target_mount}/usr/share/tontoo/dock/lang"
+    cp -a /usr/share/tontoo/dock/lang/. "${target_mount}/usr/share/tontoo/dock/lang/"
+  fi
+
+  # Install LaunchPad service for dock (per-user on installed systems,
+  # which is the multi-user-ready form of the live `liveuser` service)
+  mkdir -p "${target_mount}/System/services"
+  cat > "${target_mount}/System/services/dock.service" <<EOF
+name: dock
+execute: /usr/local/bin/start-dock.sh
+type: sys
+user: ${username}
+depends_on:
+  - compositor
+  - live-setup
+restart: true
+EOF
+}
+
 install_theme_into_target() {
   emit_progress 83 "Installing system theme"
 
@@ -699,7 +734,7 @@ fi
 
 # Install LaunchPad service YAMLs
 mkdir -p "${target_mount}/System/services"
-for svc in seatd dbus networkmanager pipewire pipewire-pulse wireplumber compositor menubar FishPerms tapp-binfmt; do
+for svc in seatd dbus networkmanager pipewire pipewire-pulse wireplumber compositor menubar dock FishPerms tapp-binfmt; do
     if [[ -f "/System/services/${svc}.service" ]]; then
       cp -a "/System/services/${svc}.service" \
         "${target_mount}/System/services/${svc}.service"
@@ -719,6 +754,7 @@ fi
 install_assets_into_target
 install_compositor_into_target
 install_menubar_into_target
+install_dock_into_target
 install_theme_into_target
 install_systemoverview_into_target
 install_aboutthisapp_into_target

@@ -77,6 +77,7 @@ xorg-server
 xorg-xwayland
 xterm
 zsh
+vte4
 rust
 xorg-xcursorgen
 librsvg
