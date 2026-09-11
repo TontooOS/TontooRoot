@@ -47,11 +47,12 @@ See [LivePackages.md](LivePackages.md) for details.
 - 2026-09-10: Stage Dock into the ISO (`stage-dock.sh`): TBuild bundle
   built from `TontooProgramms/Dock` (`tontoo.proj`, `com.tontoo.dock`)
   and extracted as a folder at `/System/Applications/Dock.app`, started
-  at boot via the `dock` LaunchPad service
+  at boot via the   `dock` LaunchPad service
   (`System/services/dock.service` -> `start-dock.sh` -> `tapp`),
   language files at `/usr/share/tontoo/dock/lang`, installer copy,
   profiledef permissions and gitignore updated. Same pattern as
-  `Menubar.app`.
+  `Menubar.app`, except the starter pins `GDK_BACKEND=x11`: the dock
+  has no layer-shell code and positions itself via X11 moves only.
 - 2026-09-10: Stage wallpaper packs to `/System/User/Wallpapers/`
   (`stage-wallpapers.sh`): all packs copied to the new canonical path,
   compositor default points there, legacy `/usr/share/tontoo/wallpapers`

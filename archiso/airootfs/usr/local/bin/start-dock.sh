@@ -63,11 +63,16 @@ if [ -z "${DISPLAY:-}" ]; then
   unset _xsock _dpy
 fi
 echo "start-dock: DISPLAY=${DISPLAY:-<unset>}" >&2
-# Wayland session environment for the dock client. Layer-shell on
-# Wayland pins the dock at the bottom with alpha blending; the X11
-# path above stays as fallback inside the app.
+# Wayland session environment for the dock client. Unlike Menubar.app
+# (layer-shell on Wayland), the dock has no layer-shell code and
+# positions itself exclusively via X11 (XMoveWindow + size hints, see
+# x11_place in the Dock sources). It MUST run on the X11 backend:
+# under Wayland gdk_x11_surface_get_xid returns garbage, every move
+# silently fails and the dock/LaunchPad land at the compositor's
+# default spot (top area / random). The app itself defaults to x11
+# when GDK_BACKEND is unset; pin it explicitly.
 export XDG_CURRENT_DESKTOP="${XDG_CURRENT_DESKTOP:-TontooOS}"
 export XDG_SESSION_TYPE=wayland
-export GDK_BACKEND="${GDK_BACKEND:-wayland}"
+export GDK_BACKEND=x11
 echo "start-dock: launching /System/Applications/Dock.app" >&2
 exec /usr/bin/tapp /System/Applications/Dock.app
