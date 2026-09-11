@@ -48,8 +48,10 @@ echo "Staged wallpapers -> /System/User/Wallpapers"
 echo "  Categories: $(ls -1 "${target_dir}" | tr '\n' ' ')"
 
 # Compatibility: keep the legacy path working as a symlink to the new
-# canonical location.
+# canonical location. Relative target: absolute links (e.g. /System/...)
+# escape the airootfs workdir when mkarchiso resolves paths
+# ("Outside of valid path"), so keep this relative.
 rm -rf "${legacy_dir}"
 mkdir -p "$(dirname -- "${legacy_dir}")"
-ln -sfn /System/User/Wallpapers "${legacy_dir}"
+ln -sfn ../../../System/User/Wallpapers "${legacy_dir}"
 echo "Linked legacy path /usr/share/tontoo/wallpapers -> /System/User/Wallpapers"

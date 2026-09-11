@@ -49,7 +49,10 @@ bash BaseOS/scripts/build-iso.sh
 - The script removes the old target first, then copies each pack with `cp -a`.
 - A compatibility symlink is kept at
   `/usr/share/tontoo/wallpapers` pointing to `/System/User/Wallpapers` so
-  older paths keep working.
+  older paths keep working. The link target is relative
+  (`../../../System/User/Wallpapers`): absolute targets escape the airootfs
+  workdir when `mkarchiso` resolves paths and abort the build with
+  `Outside of valid path`.
 
 ## Default Wallpaper
 

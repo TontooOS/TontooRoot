@@ -126,8 +126,11 @@ chmod 0755 "${dest_dir}" 2>/dev/null || true
 echo "==> systemoverview.app folder -> ${dest_dir}"
 
 # --- Link /Applications/SystemOverview.app system-wide (top-level system path) ---
+# Relative target: absolute links (e.g. /System/...) escape the airootfs
+# workdir when mkarchiso resolves file_permissions entries
+# ("Outside of valid path"), so keep this relative.
 mkdir -p "$(dirname "${system_link}")"
-ln -sfn /System/Applications/systemoverview.app "${system_link}"
+ln -sfn ../System/Applications/systemoverview.app "${system_link}"
 echo "==> system link -> ${system_link}"
 
 # --- Remove the legacy per-user link (replaced by the system link above) ---

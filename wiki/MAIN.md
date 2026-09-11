@@ -36,6 +36,14 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-11: Fixed `mkarchiso` abort `Outside of valid path` on
+  `/Applications/SystemOverview.app`: the `/Applications` links
+  (`stage-systemoverview.sh`, `stage-systemsettings.sh`) and the wallpaper
+  compatibility link (`stage-wallpapers.sh`) used absolute `/System/...`
+  targets, which escape the airootfs workdir when `mkarchiso` resolves
+  `file_permissions` entries. All three links are relative now
+  (`../System/...`, `../../../System/User/Wallpapers`); `profiledef.sh`
+  permissions are unchanged.
 - 2026-09-11: Stage SystemSettings into the ISO
   (`stage-systemsettings.sh`): TBuild bundle built from
   `TontooMicroApps/SystemSettings` and extracted as a folder at

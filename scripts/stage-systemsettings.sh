@@ -136,8 +136,11 @@ chmod 0755 "${dest_dir}" 2>/dev/null || true
 echo "==> SystemSettings.app bundle -> ${dest_dir}"
 
 # --- Link /Applications/SystemSettings.app system-wide (top-level system path) ---
+# Relative target: absolute links (e.g. /System/...) escape the airootfs
+# workdir when mkarchiso resolves file_permissions entries
+# ("Outside of valid path"), so keep this relative.
 mkdir -p "$(dirname "${system_link}")"
-ln -sfn /System/Applications/SystemSettings.app "${system_link}"
+ln -sfn ../System/Applications/SystemSettings.app "${system_link}"
 echo "==> system link -> ${system_link}"
 
 # --- Stage SystemSettings language files (the app falls back to
