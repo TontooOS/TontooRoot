@@ -81,7 +81,7 @@ if [[ "${GITHUB_ACTIONS_BUILD}" -eq 1 ]]; then
   clone_github_repo Dock "${base_dir}/TontooProgramms/Dock"
   clone_github_repo TBuild "${base_dir}/TontooProgramms/TBuild"
   clone_github_repo LaunchPadLib "${base_dir}/TontooLibs/LaunchPad"
-  for framework in Accessibility CoreLocation CoreIcon Foundation NetworkKit UIKitDynamics UIKit WebKit TontooUI MapsKit WeatherKit; do
+  for framework in FishFile CoreData CoreSettings CoreWindows Accessibility CoreLocation CoreIcon Foundation NetworkKit UIKitDynamics UIKit WebKit TontooUI MapsKit WeatherKit; do
     clone_github_repo "${framework}" "${base_dir}/TontooLibs/${framework}"
   done
   # Point helpers with configurable source locations at the clones.

@@ -14,6 +14,7 @@ boot and desktop path before branded layers are added.
 | Main index | [MAIN.md](MAIN.md) | This page |
 | Rules | [RULE.md](RULE.md) | Development and usage rules |
 | LivePackages | [LivePackages.md](LivePackages.md) | Live ISO packages and pacman keyring self-heal |
+| Frameworks | [Frameworks.md](Frameworks.md) | System libraries: `.library` bundles plus `.resources` sidecars under `/Library/System` |
 | Installer | [Installer.md](Installer.md) | Destructive Arch installer, Python config parsing |
 | Wallpapers | [Wallpapers.md](Wallpapers.md) | Wallpaper packs at `/System/User/Wallpapers` and staging |
 
@@ -35,6 +36,14 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-11: Stage framework resources and all libraries
+  (`stage-frameworks.sh`): every framework now stages its runtime resources
+  (`assets/`, `lang/`, ...) as a `/Library/System/<name>.resources/` sidecar
+  next to `<name>.library` (fixes missing SF Symbols / icons on LiveOS);
+  added the missing `fishfile`, `coredata`, `coresettings`, `corewindows`
+  and `launchpad` frameworks (16 total, `so-name` override for
+  `launchpad_lib`); libraries resolve resources at runtime via the
+  sidecar-first contract. See [Frameworks.md](Frameworks.md).
 - 2026-09-10: Stage Dock into the ISO (`stage-dock.sh`): TBuild bundle
   built from `TontooProgramms/Dock` (`tontoo.proj`, `com.tontoo.dock`)
   and extracted as a folder at `/System/Applications/Dock.app`, started

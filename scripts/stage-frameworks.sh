@@ -63,11 +63,17 @@ if [[ ! -d "${libs_src}" ]]; then
   exit 1
 fi
 
-# "system-name:RepoDir" in dependency order. Each entry's path dependencies
-# must appear before it: uikit needs uikitdynamics, webkit/tontooui need
-# uikit + corelocation/coreicon, mapskit needs uikit + corelocation,
-# weatherkit needs corelocation.
+# "system-name:RepoDir[:so-name]" in dependency order. Each entry's path
+# dependencies must appear before it: fishfile before coredata, uikit needs
+# uikitdynamics, webkit/tontooui need uikit + corelocation/coreicon, mapskit
+# needs uikit + corelocation, weatherkit needs corelocation.
+# so-name defaults to system-name with '-' -> '_' (cargo lib naming); it is
+# only needed when the cargo lib name differs (e.g. launchpad-lib).
 FRAMEWORKS=(
+  "fishfile:FishFile"
+  "coredata:CoreData"
+  "coresettings:CoreSettings"
+  "corewindows:CoreWindows"
   "accessibility:Accessibility"
   "corelocation:CoreLocation"
   "coreicon:CoreIcon"
@@ -79,6 +85,7 @@ FRAMEWORKS=(
   "tontooui:TontooUI"
   "mapskit:MapsKit"
   "weatherkit:WeatherKit"
+  "launchpad:LaunchPad:launchpad_lib"
 )
 
 stage_sources() { # stage_sources <RepoDir> <system-name>
@@ -93,9 +100,46 @@ stage_sources() { # stage_sources <RepoDir> <system-name>
   tar -C "${src}" --exclude=.git --exclude=target -cf - . | tar -C "${dst}" -xf -
 }
 
-build_framework() { # build_framework <RepoDir> <system-name>
+stage_resources() { # stage_resources <RepoDir> <system-name>
+  # Copies runtime resources (icons, branding assets, lang files, ...) next
+  # to the .library file as a sidecar folder:
+  #   /Library/System/<name>.resources/{assets,lang,...}
+  # staged both into airootfs and into the live /Library/System.
+  # Best-effort: never fails the framework build.
   local repo_dir="$1"
   local name="$2"
+  local src="${libs_src}/${repo_dir}"
+  local res_dst="${framework_dir}/${name}.resources"
+  local sys_dst="${system_dir}/${name}.resources"
+  rm -rf "${res_dst}"
+  mkdir -p "${res_dst}"
+  local copied=0
+  local d
+  for d in assets lang Resources resources fonts images icons data; do
+    if [[ -d "${src}/${d}" ]]; then
+      cp -a "${src}/${d}" "${res_dst}/${d}" 2>/dev/null || true
+      copied=1
+    fi
+  done
+  # Headers are useful for debugging on device; keep them out of the ISO
+  # if they get too big? No - keep it simple, skip Headers (source-level).
+  if [[ "${copied}" -eq 1 ]]; then
+    rm -rf "${sys_dst}"
+    mkdir -p "${sys_dst}"
+    cp -a "${res_dst}/." "${sys_dst}/" 2>/dev/null || true
+    log "  Resources staged -> ${framework_dir}/${name}.resources ($(du -sh "${res_dst}" 2>/dev/null | cut -f1))"
+  else
+    log "  No resources found in ${src} (no assets/lang/... dir), skipping."
+    rmdir "${res_dst}" 2>/dev/null || true
+  fi
+}
+
+build_framework() { # build_framework <RepoDir> <system-name> [so-name]
+  local repo_dir="$1"
+  local name="$2"
+  local so_base="${3:-$2}"
+  # cargo converts '-' to '_' in lib file names.
+  so_base="${so_base//-/_}"
   local lib_name="${name}.library"
   local src="${libs_src}/${repo_dir}"
   local start_time end_time duration
@@ -124,8 +168,8 @@ build_framework() { # build_framework <RepoDir> <system-name>
     return 1
   fi
 
-  local so_path="target/release/lib${name}.so"
-  log "[4/5] Looking for ${so_path}..."
+  local so_path="target/release/lib${so_base}.so"
+  log "[4/6] Looking for ${so_path}..."
   if [[ ! -f "${so_path}" ]]; then
     log "  No cdylib produced by default, forcing cdylib crate-type..."
     if ! grep -q '^\[lib\]' Cargo.toml; then
@@ -151,8 +195,12 @@ build_framework() { # build_framework <RepoDir> <system-name>
   rm -f "${framework_dir}/${name}.rlib"
   local size
   size=$(du -h "${framework_dir}/${lib_name}" | cut -f1)
-  log "[4/5] Copied ${lib_name} (${size}) -> airootfs + ${system_dir}"
-  log "[5/5] Done"
+  log "[4/6] Copied ${lib_name} (${size}) -> airootfs + ${system_dir}"
+
+  log "[5/6] Staging resources (assets/lang/...)..."
+  stage_resources "${repo_dir}" "${name}" || log "  WARNING: resource staging failed for ${name}, continuing."
+
+  log "[6/6] Done"
 
   end_time=$(date +%s)
   duration=$((end_time - start_time))
@@ -165,8 +213,13 @@ build_framework() { # build_framework <RepoDir> <system-name>
 
 for entry in "${FRAMEWORKS[@]}"; do
   name="${entry%%:*}"
-  repo="${entry##*:}"
-  build_framework "${repo}" "${name}" || echo "WARNING: framework ${name} failed, continuing." >&2
+  rest="${entry#*:}"
+  repo="${rest%%:*}"
+  so_name="${rest#*:}"
+  if [[ "${so_name}" == "${repo}" ]]; then
+    so_name="${name}"
+  fi
+  build_framework "${repo}" "${name}" "${so_name}" || echo "WARNING: framework ${name} failed, continuing." >&2
 done
 
 log "=========================================="
@@ -174,3 +227,5 @@ log "Framework staging complete."
 log "=========================================="
 log "Libraries in ${framework_dir}:"
 find "${framework_dir}" -maxdepth 1 -type f 2>/dev/null | sort
+log "Resources in ${framework_dir}:"
+find "${framework_dir}" -maxdepth 1 -type d -name "*.resources" 2>/dev/null | sort
