@@ -1,0 +1,9 @@
+# TontooOS settings daemon (system preferences store, WiFi, customize,
+# wallpaper backends). Started at boot via LaunchPad, restarted on crash.
+# Runs as root: it owns machine state under /Library/Preferences and drives
+# NetworkManager for WiFi control.
+name: SettingsDaemon
+execute: /usr/local/bin/start-settingsdaemon.sh
+type: sys
+user: root
+restart: true

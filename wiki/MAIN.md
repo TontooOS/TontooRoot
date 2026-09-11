@@ -36,6 +36,23 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-11: Stage SystemSettings into the ISO
+  (`stage-systemsettings.sh`): TBuild bundle built from
+  `TontooMicroApps/SystemSettings` and extracted as a folder at
+  `/System/Applications/SystemSettings.app` (on demand via tapp, no
+  service), system-wide link at `/Applications/SystemSettings.app`
+  (top-level system path, not per-user), language fallback at
+  `/usr/share/systemsettings/lang`, installer copy, profiledef
+  permissions and gitignore updated.
+- 2026-09-11: Stage SettingsDaemon into the ISO
+  (`stage-settingsdaemon.sh`): Rust release binary assembled as a
+  TBuild-style bundle at `/System/Daemons/Settings.app`
+  (`App/settings-daemon`, `Info.tontoo` versioned from the crate),
+  started at boot via the `SettingsDaemon` LaunchPad service
+  (`System/services/SettingsDaemon.service` ->
+  `start-settingsdaemon.sh` -> `tapp`, root, restart), FishPerms trust
+  via `/System/Daemons/**`, installer copy, profiledef permissions and
+  gitignore updated.
 - 2026-09-11: SystemOverview link moved to the system root
   (`stage-systemoverview.sh`): the app is now linked system-wide as
   `/Applications/SystemOverview.app` instead of per-user via

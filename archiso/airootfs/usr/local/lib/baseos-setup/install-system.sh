@@ -332,6 +332,52 @@ restart: true
 EOF
 }
 
+install_systemsettings_into_target() {
+  emit_progress 83 "Installing system settings"
+
+  # SystemSettings.app bundle (system preferences, built with TBuild).
+  # Launched on demand via tapp, no service.
+  if [[ -d /System/Applications/SystemSettings.app ]]; then
+    mkdir -p "${target_mount}/System/Applications"
+    cp -a /System/Applications/SystemSettings.app "${target_mount}/System/Applications/SystemSettings.app"
+    chmod 0755 "${target_mount}/System/Applications/SystemSettings.app/App/systemsettings" 2>/dev/null || true
+  fi
+
+  # System-wide link /Applications/SystemSettings.app (top-level system
+  # path, not per-user).
+  if [[ -d /System/Applications/SystemSettings.app ]]; then
+    mkdir -p "${target_mount}/Applications"
+    ln -sfn /System/Applications/SystemSettings.app "${target_mount}/Applications/SystemSettings.app"
+  fi
+
+  # SystemSettings language files (fallback lookup path of the app)
+  if [[ -d /usr/share/systemsettings/lang ]]; then
+    mkdir -p "${target_mount}/usr/share/systemsettings/lang"
+    cp -a /usr/share/systemsettings/lang/. "${target_mount}/usr/share/systemsettings/lang/"
+  fi
+}
+
+install_settingsdaemon_into_target() {
+  emit_progress 83 "Installing settings daemon"
+
+  # Settings.app daemon bundle (tapp bundle assembled by stage-settingsdaemon.sh).
+  if [[ -d /System/Daemons/Settings.app ]]; then
+    mkdir -p "${target_mount}/System/Daemons"
+    cp -a /System/Daemons/Settings.app "${target_mount}/System/Daemons/Settings.app"
+    chmod 0755 "${target_mount}/System/Daemons/Settings.app/App/settings-daemon" 2>/dev/null || true
+  fi
+
+  # Daemon starter
+  copy_if_exists /usr/local/bin/start-settingsdaemon.sh /usr/local/bin/start-settingsdaemon.sh
+  chmod 0755 "${target_mount}/usr/local/bin/start-settingsdaemon.sh" 2>/dev/null || true
+
+  # LaunchPad service: root daemon, same form live and installed.
+  if [[ -f /System/services/SettingsDaemon.service ]]; then
+    mkdir -p "${target_mount}/System/services"
+    cp -a /System/services/SettingsDaemon.service "${target_mount}/System/services/SettingsDaemon.service"
+  fi
+}
+
 install_theme_into_target() {
   emit_progress 83 "Installing system theme"
 
@@ -490,7 +536,7 @@ configure_first_boot_reboot() {
 
   # Install LaunchPad service YAMLs
   mkdir -p "${target_mount}/System/services"
-  for svc in seatd dbus networkmanager pipewire pipewire-pulse wireplumber FishPerms tapp-binfmt; do
+  for svc in seatd dbus networkmanager pipewire pipewire-pulse wireplumber FishPerms tapp-binfmt SettingsDaemon; do
     if [[ -f "/System/services/${svc}.service" ]]; then
       cp -a "/System/services/${svc}.service" \
         "${target_mount}/System/services/${svc}.service"
@@ -736,7 +782,7 @@ fi
 
 # Install LaunchPad service YAMLs
 mkdir -p "${target_mount}/System/services"
-for svc in seatd dbus networkmanager pipewire pipewire-pulse wireplumber compositor menubar dock FishPerms tapp-binfmt; do
+  for svc in seatd dbus networkmanager pipewire pipewire-pulse wireplumber compositor menubar dock FishPerms tapp-binfmt SettingsDaemon; do
     if [[ -f "/System/services/${svc}.service" ]]; then
       cp -a "/System/services/${svc}.service" \
         "${target_mount}/System/services/${svc}.service"
@@ -757,6 +803,8 @@ install_assets_into_target
 install_compositor_into_target
 install_menubar_into_target
 install_dock_into_target
+install_systemsettings_into_target
+install_settingsdaemon_into_target
 install_theme_into_target
 install_systemoverview_into_target
 install_aboutthisapp_into_target

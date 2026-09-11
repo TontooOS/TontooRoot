@@ -29,6 +29,9 @@ archiso/airootfs/Library/System/*.library
 archiso/airootfs/Libraries/TontooUI/
 archiso/airootfs/System/Applications/Menubar.app/
 archiso/airootfs/System/Applications/Dock.app/
+archiso/airootfs/System/Applications/SystemSettings.app/
+archiso/airootfs/System/Daemons/Settings.app/
+archiso/airootfs/Applications/SystemSettings.app
 archiso/airootfs/System/Applications/systemoverview.app/
 archiso/airootfs/System/Applications/AboutThisApp.app/
 archiso/airootfs/Applications/SystemOverview.app
@@ -37,6 +40,7 @@ archiso/airootfs/usr/share/tapp/lang/
 archiso/airootfs/usr/share/launchpad/lang/
 archiso/airootfs/usr/share/tontoo/menubar/lang/
 archiso/airootfs/usr/share/tontoo/dock/lang/
+archiso/airootfs/usr/share/systemsettings/lang/
 archiso/airootfs/Applications/Terminal.app/
 archiso/airootfs/Applications/Weather.app/
 archiso/airootfs/usr/share/terminal/lang/
