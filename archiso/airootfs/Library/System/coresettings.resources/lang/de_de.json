@@ -1,0 +1,7 @@
+{
+  "socket_missing": "Settings-Daemon-Socket nicht gefunden",
+  "connection_failed": "Verbindung zum Settings-Daemon fehlgeschlagen",
+  "protocol_error": "Settings-Daemon-Protokollfehler",
+  "server_error": "Settings-Daemon meldet einen Fehler",
+  "parse_error": "Antwort des Settings-Daemon konnte nicht gelesen werden"
+}

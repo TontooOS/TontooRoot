@@ -1,0 +1,6 @@
+
+Ocean.jpg:
+Author: https://unsplash.com/de/@matthardy?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText Matt Hardy
+
+Seal.png:
+Author: https://unsplash.com/de/@bradleycdunn?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText Bradley Dunn
