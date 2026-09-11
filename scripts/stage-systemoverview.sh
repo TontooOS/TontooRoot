@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Build the SystemOverview app with TBuild and stage it into the live ISO
 # airootfs as an extracted folder at /System/Applications/systemoverview.app
-# (no ZIP on the ISO). Also links it into every home as
-# ~/Applications/SystemOverview.app via /etc/skel.
+# (no ZIP on the ISO). Also links it system-wide as
+# /Applications/SystemOverview.app (top-level system path, no per-user link).
 #
 # build-iso.sh invokes this before mkarchiso.
 set -euo pipefail
@@ -22,7 +22,7 @@ base_dir="$(cd -- "${script_dir}/../.." && pwd)"
 profile_dir="${base_dir}/BaseOS/archiso"
 apps_dir="${profile_dir}/airootfs/System/Applications"
 dest_dir="${apps_dir}/systemoverview.app"
-skel_link="${profile_dir}/airootfs/etc/skel/Applications/SystemOverview.app"
+system_link="${profile_dir}/airootfs/Applications/SystemOverview.app"
 
 # --- Locate the SystemOverview project ---
 overview_dir=""
@@ -125,7 +125,10 @@ fi
 chmod 0755 "${dest_dir}" 2>/dev/null || true
 echo "==> systemoverview.app folder -> ${dest_dir}"
 
-# --- Link ~/Applications/SystemOverview.app for every user via skel ---
-mkdir -p "$(dirname "${skel_link}")"
-ln -sfn /System/Applications/systemoverview.app "${skel_link}"
-echo "==> skel link -> ${skel_link}"
+# --- Link /Applications/SystemOverview.app system-wide (top-level system path) ---
+mkdir -p "$(dirname "${system_link}")"
+ln -sfn /System/Applications/systemoverview.app "${system_link}"
+echo "==> system link -> ${system_link}"
+
+# --- Remove the legacy per-user link (replaced by the system link above) ---
+rm -f "${profile_dir}/airootfs/etc/skel/Applications/SystemOverview.app"

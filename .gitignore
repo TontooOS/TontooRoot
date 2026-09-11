@@ -31,7 +31,7 @@ archiso/airootfs/System/Applications/Menubar.app/
 archiso/airootfs/System/Applications/Dock.app/
 archiso/airootfs/System/Applications/systemoverview.app/
 archiso/airootfs/System/Applications/AboutThisApp.app/
-archiso/airootfs/etc/skel/Applications/SystemOverview.app
+archiso/airootfs/Applications/SystemOverview.app
 archiso/airootfs/usr/local/lib/node_modules/
 archiso/airootfs/usr/share/tapp/lang/
 archiso/airootfs/usr/share/launchpad/lang/

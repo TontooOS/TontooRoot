@@ -42,6 +42,7 @@ file_permissions=(
   ["/System/Applications/AboutThisApp.app"]="0:0:755"
   ["/System/Applications/AboutThisApp.app/App/about-this-app"]="0:0:755"
   ["/Applications"]="0:0:755"
+  ["/Applications/SystemOverview.app"]="0:0:755"
   ["/Applications/Weather.app"]="0:0:755"
   ["/Applications/Weather.app/App/weather"]="0:0:755"
   ["/Applications/Terminal.app"]="0:0:755"

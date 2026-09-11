@@ -362,12 +362,14 @@ install_systemoverview_into_target() {
     chmod 0755 "${target_mount}/System/Applications/systemoverview.app/App/systemoverview" 2>/dev/null || true
   fi
 
-  # Per-user link ~/Applications/SystemOverview.app (matches the live
-  # session, where it arrives via /etc/skel)
-  install -d -m 0755 "${target_mount}/Users/${username}/Applications"
-  ln -sfn /System/Applications/systemoverview.app "${target_mount}/Users/${username}/Applications/SystemOverview.app"
-  arch-chroot "$target_mount" chown -h "${username}:${username}" "/Users/${username}/Applications/SystemOverview.app"
-  arch-chroot "$target_mount" chown "${username}:${username}" "/Users/${username}/Applications"
+  # System-wide link /Applications/SystemOverview.app (top-level system path,
+  # matches the live session; no per-user link anymore)
+  if [[ -d /System/Applications/systemoverview.app ]]; then
+    mkdir -p "${target_mount}/Applications"
+    ln -sfn /System/Applications/systemoverview.app "${target_mount}/Applications/SystemOverview.app"
+  fi
+  # Remove the legacy per-user link on upgrades
+  rm -f "${target_mount}/Users/${username}/Applications/SystemOverview.app" 2>/dev/null || true
 }
 
 install_aboutthisapp_into_target() {

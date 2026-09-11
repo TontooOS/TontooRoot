@@ -36,6 +36,15 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-11: SystemOverview link moved to the system root
+  (`stage-systemoverview.sh`): the app is now linked system-wide as
+  `/Applications/SystemOverview.app` instead of per-user via
+  `~/Applications/SystemOverview.app` (`/etc/skel`); the legacy skel link
+  is removed at stage time, `profiledef.sh` gained the new path, the
+  installer (`install-system.sh`) creates the system link on target and
+  cleans the legacy user link on upgrades. The Menubar "About This Machine"
+  entry launches the system link (fallbacks: bundle directly, legacy
+  user link).
 - 2026-09-11: Stage framework resources and all libraries
   (`stage-frameworks.sh`): every framework now stages its runtime resources
   (`assets/`, `lang/`, ...) as a `/Library/System/<name>.resources/` sidecar
