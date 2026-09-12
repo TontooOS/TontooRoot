@@ -44,8 +44,24 @@ FONT_MONO="SF Pro Text 10"
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
+# --- session bus: gsettings needs one. Without it, apply files only
+# (GTK/Qt apps read those directly); gsettings catches up on the next
+# Settings toggle inside a real session. Never noisy-fail the service. ---
+SESSION_BUS_OK=0
+if [[ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
+  SESSION_BUS_OK=1
+else
+  _rt="${XDG_RUNTIME_DIR:-/run/user/$(id -u 2>/dev/null || echo 1000)}"
+  if [[ -S "${_rt}/bus" ]]; then
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=${_rt}/bus"
+    SESSION_BUS_OK=1
+  else
+    echo "tontoo-theme-apply: no session bus, applying files only" >&2
+  fi
+fi
+
 # --- gsettings (needs a session bus; skipped silently without one) ---
-if have gsettings; then
+if have gsettings && [[ "${SESSION_BUS_OK}" -eq 1 ]]; then
   gsettings set org.gnome.desktop.interface gtk-theme "${GTK_THEME}" || true
   gsettings set org.gnome.desktop.interface color-scheme "'${COLOR_SCHEME}'" || true
   gsettings set org.gnome.desktop.interface icon-theme "${ICON_THEME}" || true

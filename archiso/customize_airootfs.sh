@@ -59,6 +59,7 @@ fi
 
 # Ensure compositor starter and other local scripts are executable (Windows host may lose +x)
 chmod 0755 usr/local/bin/start-compositor.sh 2>/dev/null || true
+chmod 0755 usr/local/bin/tontoo-theme-apply 2>/dev/null || true
 chmod 0755 usr/local/bin/start-menubar.sh 2>/dev/null || true
 chmod 0755 usr/local/bin/start-dock.sh 2>/dev/null || true
 chmod 0755 usr/local/bin/baseos-setup-session 2>/dev/null || true

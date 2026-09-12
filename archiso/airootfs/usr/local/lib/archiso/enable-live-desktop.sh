@@ -45,7 +45,14 @@ chmod 700 /run/liveuser
 
 chmod 0755 /usr/local/bin/baseos-setup-session 2>/dev/null || true
 
-install -Dm0644 /etc/machine-id /var/lib/dbus/machine-id
+# Valid machine IDs: dbus + dconf refuse empty/invalid files, so never
+# copy a possibly empty /etc/machine-id over blindly.
+if command -v systemd-machine-id-setup >/dev/null 2>&1; then
+  systemd-machine-id-setup 2>/dev/null || true
+fi
+if [[ -s /etc/machine-id ]]; then
+  install -Dm0644 /etc/machine-id /var/lib/dbus/machine-id
+fi
 ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
 if [[ -f /usr/share/pixmaps/tontoo-default.png ]]; then

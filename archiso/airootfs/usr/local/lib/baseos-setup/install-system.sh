@@ -555,6 +555,13 @@ if [[ -e "$marker" ]]; then
 fi
 
 mkdir -p /var/lib/tontooos
+# Valid machine IDs: dbus + dconf refuse empty/invalid files.
+if command -v systemd-machine-id-setup >/dev/null 2>&1; then
+  systemd-machine-id-setup 2>/dev/null || true
+fi
+if [[ -s /etc/machine-id ]]; then
+  install -Dm0644 /etc/machine-id /var/lib/dbus/machine-id
+fi
 touch "$marker"
 reboot
 EOF
