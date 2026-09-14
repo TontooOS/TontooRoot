@@ -154,6 +154,7 @@ run_stage "terminal" "${base_dir}/BaseOS/scripts/stage-terminal.sh"
 run_stage "cursors" "${base_dir}/BaseOS/scripts/stage-cursors.sh"
 run_stage "wallpapers" "${base_dir}/BaseOS/scripts/stage-wallpapers.sh"
 run_stage "frameworks" "${base_dir}/BaseOS/scripts/stage-frameworks.sh"
+run_stage "tontooboot" "${base_dir}/BaseOS/scripts/stage-tontooboot.sh"
 run_stage "sshd" "${base_dir}/BaseOS/scripts/stage-sshd.sh"
 
 "${sudo_cmd[@]}" mkarchiso -v -w "${work_dir}" -o "${output_dir}" "${profile_dir}"

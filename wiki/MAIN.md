@@ -16,6 +16,7 @@ boot and desktop path before branded layers are added.
 | LivePackages | [LivePackages.md](LivePackages.md) | Live ISO packages and pacman keyring self-heal |
 | Frameworks | [Frameworks.md](Frameworks.md) | System libraries: `.library` bundles plus `.resources` sidecars under `/Library/System` |
 | Installer | [Installer.md](Installer.md) | Destructive Arch installer, Python config parsing |
+| Bootloader | [Bootloader.md](Bootloader.md) | TontooBoot rEFInd picker, Apple style, Dark #1d1d1d |
 | Wallpapers | [Wallpapers.md](Wallpapers.md) | Wallpaper packs at `/System/User/Wallpapers` and staging |
 
 ## Quick Start
@@ -36,6 +37,11 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-14: Added TontooBoot (`Bootloader.md`): rEFInd based Apple style
+  picker, Dark `#1d1d1d` default, SF Pro reference, `en_us` + `de_de`
+  labels, `stage-tontooboot.sh` staging to `/usr/share/tontooboot`,
+  `refind` live package, installer at
+  `/usr/local/lib/baseos-setup/install-tontooboot.sh`.
 - 2026-09-11: Fixed `mkarchiso` abort `Outside of valid path` on
   `/Applications/SystemOverview.app`: the `/Applications` links
   (`stage-systemoverview.sh`, `stage-systemsettings.sh`) and the wallpaper

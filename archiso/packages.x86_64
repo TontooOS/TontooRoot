@@ -50,6 +50,7 @@ plymouth
 polkit
 python
 python-pip
+refind
 qemu-guest-agent
 seatd
 spice-vdagent

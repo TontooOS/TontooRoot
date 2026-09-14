@@ -56,6 +56,7 @@ file_permissions=(
   ["/etc/sudoers.d/00-liveuser"]="0:0:440"
   ["/usr/local/bin/baseos-setup-session"]="0:0:755"
   ["/usr/local/lib/baseos-setup/install-system.sh"]="0:0:755"
+  ["/usr/local/lib/baseos-setup/install-tontooboot.sh"]="0:0:755"
   ["/usr/local/lib/archiso/enable-live-desktop.sh"]="0:0:755"
   ["/usr/bin/tontoo-compositor"]="0:0:755"
   ["/usr/bin/launchpad-daemon"]="0:0:755"
