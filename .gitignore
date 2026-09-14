@@ -46,6 +46,8 @@ archiso/airootfs/Applications/Weather.app/
 archiso/airootfs/usr/share/terminal/lang/
 archiso/airootfs/usr/share/terminal/tontoo-prompt.zsh
 archiso/airootfs/usr/share/weather/lang/
+archiso/airootfs/usr/share/tontooboot/
+archiso/airootfs/usr/local/lib/baseos-setup/install-tontooboot.sh
 
 # Generated SSH host keys (stage-sshd.sh recreates them). Never commit keys.
 archiso/airootfs/etc/ssh/ssh_host_*

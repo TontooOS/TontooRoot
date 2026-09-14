@@ -37,6 +37,11 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-14: Replaced GRUB with TontooBoot on installed systems
+  (`Installer.md`, `install-system.sh`): UEFI only ESP + ROOT layout,
+  `refind` + `librsvg` target packages, `install_tontooboot_into_target`
+  with real root UUID and `refind_linux.conf` fallback. Live ISO boot
+  modes unchanged.
 - 2026-09-14: Added TontooBoot (`Bootloader.md`): rEFInd based Apple style
   picker, Dark `#1d1d1d` default, SF Pro reference, `en_us` + `de_de`
   labels, `stage-tontooboot.sh` staging to `/usr/share/tontooboot`,

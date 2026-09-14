@@ -26,18 +26,26 @@ ssh_port="$(json_value sshPort 22)"
 
 1. `preflight_package_databases` refreshes the mirrorlist, the keyring and the
    `archlinux-keyring` package.
-2. The selected disk is wiped (GPT, BIOSBOOT + ESP + ROOT), formatted and
+2. The selected disk is wiped (GPT, ESP + ROOT), formatted and
    mounted at `/mnt`.
 3. `pacstrap -K` installs the `packages` array, which includes `chromium`,
-   `electron`, `archlinux-keyring`, `networkmanager`, `pipewire` and the desktop
-   stack.
+   `electron`, `archlinux-keyring`, `networkmanager`, `pipewire`,
+   `refind`, `librsvg` and the desktop stack.
 4. Locale, keyboard, timezone, hostname, users (`/Users/<name>`, `wheel` sudo),
    SSH config and LaunchPad services are written to the target.
 5. System assets (Plymouth theme, icons, sounds, wallpapers) are written to
    the target; no JavaScript runtime is installed or linked.
-6. GRUB (UEFI + BIOS), a first-boot finalization service and a sanitized
+6. TontooBoot (rEFInd), a first-boot finalization service and a sanitized
    `install-settings.json` (password fields removed via `python3`) finish the
    install, then the machine reboots.
+
+## Bootloader
+
+The target uses TontooBoot (rEFInd, UEFI only). Legacy BIOS boot is not
+supported. `install_tontooboot_into_target` runs `refind-install` in the
+target, copies `refind.conf` plus the `tontooboot` theme to
+`/boot/EFI/refind`, resolves `UUID=TONTOO-ROOT` to the real root UUID
+and writes `/boot/refind_linux.conf` as fallback.
 
 ## Removed Node.js Runtime
 
@@ -65,5 +73,6 @@ PY
 
 ## Cross References
 
+- [Bootloader.md](Bootloader.md) – TontooBoot theme and install flow
 - [LivePackages.md](LivePackages.md) – live packages and keyring self-heal
 - [RULE.md](RULE.md) – wiki conventions

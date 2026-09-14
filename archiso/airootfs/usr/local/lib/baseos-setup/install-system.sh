@@ -506,6 +506,55 @@ install_fishperms_into_target() {
   done
 }
 
+install_tontooboot_into_target() {
+  emit_progress 84 "Installing TontooBoot"
+
+  local esp_mount="/boot"
+  local root_uuid=""
+  root_uuid="$(blkid -s UUID -o value "$root_part" 2>/dev/null || true)"
+
+  # Theme sources from the live session (staged by stage-tontooboot.sh).
+  if [[ -d /usr/share/tontooboot ]]; then
+    mkdir -p "${target_mount}/usr/share/tontooboot"
+    cp -a /usr/share/tontooboot/. "${target_mount}/usr/share/tontooboot/"
+  fi
+  copy_if_exists /usr/local/lib/baseos-setup/install-tontooboot.sh /usr/local/lib/baseos-setup/install-tontooboot.sh
+  chmod 0755 "${target_mount}/usr/local/lib/baseos-setup/install-tontooboot.sh" 2>/dev/null || true
+
+  # Install rEFInd into the ESP inside the target.
+  arch-chroot "$target_mount" refind-install --usedefault "${esp_mount}"
+
+  local theme_dst="${target_mount}${esp_mount}/EFI/refind/themes/tontooboot"
+  local refind_dir="${target_mount}${esp_mount}/EFI/refind"
+  mkdir -p "${theme_dst}/icons" "${theme_dst}/lang"
+
+  cp -f "${target_mount}/usr/share/tontooboot/refind.conf" "${refind_dir}/refind.conf"
+  cp -f "${target_mount}/usr/share/tontooboot/theme.conf" "${theme_dst}/theme.conf"
+  cp -a "${target_mount}/usr/share/tontooboot/lang/." "${theme_dst}/lang/" 2>/dev/null || true
+
+  if command -v rsvg-convert >/dev/null 2>&1; then
+    for svg in "${target_mount}/usr/share/tontooboot/icons/"*.svg; do
+      [[ -e "$svg" ]] || continue
+      name="$(basename -- "$svg" .svg)"
+      rsvg-convert -w 144 -h 144 "$svg" -o "${theme_dst}/icons/${name}.png" || true
+    done
+    rsvg-convert -w 1920 -h 1080 "${target_mount}/usr/share/tontooboot/icons/background.svg" -o "${theme_dst}/banner.png" || true
+  else
+    cp -a "${target_mount}/usr/share/tontooboot/icons/." "${theme_dst}/icons/" 2>/dev/null || true
+  fi
+
+  # Point the TontooOS stanza at the real root UUID.
+  if [[ -n "$root_uuid" ]]; then
+    sed -i "s/UUID=TONTOO-ROOT/UUID=${root_uuid}/g" "${refind_dir}/refind.conf"
+  fi
+
+  # Fallback auto-detect file for kernels without manual stanza.
+  cat > "${target_mount}${esp_mount}/refind_linux.conf" <<EOF
+"Boot TontooOS"  "root=UUID=${root_uuid} rw quiet splash loglevel=3 vt.global_cursor_default=0 nowatchdog init=/usr/bin/launchpad-daemon --services-dir /System/services"
+"Boot TontooOS Recovery"  "root=UUID=${root_uuid} rw single init=/usr/bin/launchpad-daemon --services-dir /System/services"
+EOF
+}
+
 configure_boot_splash_into_target() {
   emit_progress 84 "Configuring boot splash"
 
@@ -518,11 +567,10 @@ EOF
     sed -i 's/^HOOKS=.*/HOOKS=(base udev plymouth autodetect microcode modconf kms keyboard keymap consolefont block filesystems fsck)/' "${target_mount}/etc/mkinitcpio.conf"
   fi
 
-  if [[ -f "${target_mount}/etc/default/grub" ]]; then
-    sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3 rd.udev.log_level=3 vt.global_cursor_default=0 nowatchdog plymouth.ignore-serial-consoles init=\/usr\/bin\/launchpad-daemon --services-dir \/System\/services"/' "${target_mount}/etc/default/grub"
-  fi
-
   arch-chroot "$target_mount" mkinitcpio -P
+  # Bootloader is TontooBoot (rEFInd). Kernel options live in
+  # /boot/EFI/refind/refind.conf and /boot/refind_linux.conf,
+  # installed by install_tontooboot_into_target. No GRUB defaults.
 }
 
 configure_first_boot_reboot() {
@@ -616,8 +664,8 @@ case "$language" in
   *) locale_lang="en_US.UTF-8" ;;
 esac
 
-esp_part="$(partition_path "$disk" 2)"
-root_part="$(partition_path "$disk" 3)"
+esp_part="$(partition_path "$disk" 1)"
+root_part="$(partition_path "$disk" 2)"
 
 packages=(
   accountsservice
@@ -638,7 +686,8 @@ packages=(
   git
   glib2
   gptfdisk
-  grub
+  librsvg
+  refind
   gtk3
   gvfs
   inter-font
@@ -698,11 +747,9 @@ emit_progress 8 "Erasing selected disk"
 sgdisk --zap-all "$disk"
 wipefs -af "$disk"
 parted -s "$disk" mklabel gpt
-parted -s "$disk" mkpart BIOSBOOT 1MiB 3MiB
-parted -s "$disk" set 1 bios_grub on
-parted -s "$disk" mkpart ESP fat32 3MiB 1027MiB
-parted -s "$disk" set 2 esp on
-parted -s "$disk" mkpart ROOT ext4 1027MiB 100%
+parted -s "$disk" mkpart ESP fat32 1MiB 1025MiB
+parted -s "$disk" set 1 esp on
+parted -s "$disk" mkpart ROOT ext4 1025MiB 100%
 partprobe "$disk"
 udevadm settle
 
@@ -821,12 +868,11 @@ install_fishperms_into_target
 configure_boot_splash_into_target
 
 emit_progress 86 "Installing bootloader"
-if [[ -d /sys/firmware/efi/efivars ]]; then
-  arch-chroot "$target_mount" grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=TontooOS --recheck
+if [[ ! -d /sys/firmware/efi/efivars ]]; then
+  fail "TontooBoot requires UEFI. Legacy BIOS boot is not supported."
 fi
 
-arch-chroot "$target_mount" grub-install --target=i386-pc "$disk"
-arch-chroot "$target_mount" grub-mkconfig -o /boot/grub/grub.cfg
+install_tontooboot_into_target
 
 configure_first_boot_reboot
 
