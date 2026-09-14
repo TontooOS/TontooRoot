@@ -159,6 +159,28 @@ run_stage "sshd" "${base_dir}/BaseOS/scripts/stage-sshd.sh"
 
 "${sudo_cmd[@]}" mkarchiso -v -w "${work_dir}" -o "${output_dir}" "${profile_dir}"
 
+# Post-process: replace GRUB in efiboot.img with rEFInd (TontooBoot).
+# Extract the archiso UUID from the work_dir grub.cfg (mkarchiso substitutes it).
+iso_file="$(find "${output_dir}" -maxdepth 1 -name '*.iso' -type f | head -1)"
+if [[ -n "$iso_file" ]]; then
+  archiso_uuid="$(grep -oP 'archisosearchuuid=\K[0-9a-f-]+' "${work_dir}/grub/grub.cfg" 2>/dev/null | head -1 || true)"
+  if [[ -z "$archiso_uuid" ]]; then
+    # Fallback: extract from the UUID file on ISO9660
+    uuid_file="$(find "${work_dir}" -name '*.uuid' -path '*/boot/*' -type f 2>/dev/null | head -1 || true)"
+    if [[ -n "$uuid_file" ]]; then
+      archiso_uuid="$(basename -- "$uuid_file" .uuid)"
+    fi
+  fi
+  if [[ -n "$archiso_uuid" ]]; then
+    echo "==> Patching ISO: replacing GRUB with TontooBoot (rEFInd)..."
+    bash "${base_dir}/BaseOS/scripts/postprocess-refind.sh" "$iso_file" "$archiso_uuid"
+  else
+    echo "WARNING: Could not extract archiso UUID, skipping TontooBoot ISO patch." >&2
+  fi
+else
+  echo "WARNING: No ISO file found in ${output_dir}, skipping TontooBoot ISO patch." >&2
+fi
+
 if [[ "${#failed_stages[@]}" -gt 0 ]]; then
   echo "==> Build finished WITH WARNINGS. Failed stages: ${failed_stages[*]}" >&2
 else

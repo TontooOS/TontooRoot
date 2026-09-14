@@ -665,7 +665,8 @@ case "$language" in
 esac
 
 esp_part="$(partition_path "$disk" 1)"
-root_part="$(partition_path "$disk" 2)"
+bios_part="$(partition_path "$disk" 2)"
+root_part="$(partition_path "$disk" 3)"
 
 packages=(
   accountsservice
@@ -686,6 +687,7 @@ packages=(
   git
   glib2
   gptfdisk
+  grub
   librsvg
   refind
   gtk3
@@ -747,9 +749,11 @@ emit_progress 8 "Erasing selected disk"
 sgdisk --zap-all "$disk"
 wipefs -af "$disk"
 parted -s "$disk" mklabel gpt
-parted -s "$disk" mkpart ESP fat32 1MiB 1025MiB
-parted -s "$disk" set 1 esp on
-parted -s "$disk" mkpart ROOT ext4 1025MiB 100%
+parted -s "$disk" mkpart BIOSBOOT 1MiB 3MiB
+parted -s "$disk" set 1 bios_grub on
+parted -s "$disk" mkpart ESP fat32 3MiB 1027MiB
+parted -s "$disk" set 2 esp on
+parted -s "$disk" mkpart ROOT ext4 1027MiB 100%
 partprobe "$disk"
 udevadm settle
 
@@ -868,11 +872,13 @@ install_fishperms_into_target
 configure_boot_splash_into_target
 
 emit_progress 86 "Installing bootloader"
-if [[ ! -d /sys/firmware/efi/efivars ]]; then
-  fail "TontooBoot requires UEFI. Legacy BIOS boot is not supported."
+if [[ -d /sys/firmware/efi/efivars ]]; then
+  install_tontooboot_into_target
+else
+  # BIOS fallback: install GRUB to the disk's BIOS boot partition.
+  arch-chroot "$target_mount" grub-install --target=i386-pc "$disk"
+  arch-chroot "$target_mount" grub-mkconfig -o /boot/grub/grub.cfg
 fi
-
-install_tontooboot_into_target
 
 configure_first_boot_reboot
 
