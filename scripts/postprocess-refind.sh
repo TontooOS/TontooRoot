@@ -183,7 +183,7 @@ cp "$efiboot_img" "$mkefi_img"
 
 # Wipe existing content by recreating
 dd if=/dev/zero of="$mkefi_img" bs=512 count="$size_sectors" 2>/dev/null
-mkfs.fat -F 32 -n REFINDBOOT "$mkefi_img" 2>/dev/null
+mkfs.fat -n REFINDBOOT "$mkefi_img" 2>/dev/null
 
 # Create directory structure
 mmd -i "$mkefi_img" ::/EFI
