@@ -37,6 +37,14 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-15: Fixed `theme` service stuck at `restarting` on the live
+  ISO: `/usr/local/bin/tontoo-theme-apply` shipped without the exec
+  bit, so LaunchPad spawn failed and the tick loop retried with
+  backoff forever (spawn errors ignore `restart: false`; only clean
+  child exits honor it). `profiledef.sh` gained the `0:0:755`
+  `file_permissions` entry (`customize_airootfs.sh` chmod alone is
+  clobbered by mkarchiso). Live fix without rebuild: `sudo chmod 0755`
+  the script, the service runs once and goes to `stopped`.
 - 2026-09-14: Replaced GRUB with TontooBoot on installed systems
   (`Installer.md`, `install-system.sh`): UEFI systems use rEFInd,
   BIOS systems fall back to GRUB. GPT layout with BIOSBOOT + ESP +

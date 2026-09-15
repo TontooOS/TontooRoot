@@ -73,5 +73,6 @@ file_permissions=(
   ["/usr/local/bin/start-dock.sh"]="0:0:755"
   ["/usr/local/bin/tontoo-sshd.sh"]="0:0:755"
   ["/usr/local/bin/tontoo-net-up.sh"]="0:0:755"
+  ["/usr/local/bin/tontoo-theme-apply"]="0:0:755"
   ["/Library/Preferences/FishPerms"]="0:0:755"
 )
