@@ -87,42 +87,22 @@ libinput
 iptables
 shared-mime-info
 desktop-file-utils
-# TontooCompositor - Wayfire 0.12 (wlroots 0.20)
-seatd
-libglvnd
-mesa
-libdrm
-wayfire
-wf-config
-wlroots
-libinput
-libxkbcommon
-pixman
-cairo
-pango
-glm
-libpng
-libjpeg-turbo
-libxcb
-xcb-util
-xcb-util-wm
-xcb-util-errors
-libdisplay-info
-libliftoff
-hwdata
-wayland-protocols
-vulkan-icd-loader
-mesa-vulkan-radeon
-mesa-vulkan-intel
+# TontooCompositor - Wayfire 0.12 (wlroots 0.20, built from source)
+# Note: wayfire/wf-config/wlroots are built via stage-compositor.sh,
+# not from pacman (system wayfire 0.11 would conflict with our 0.12).
+# Runtime deps below:
 swaybg
 swaylock
 swayidle
 grim
 slurp
-wl-clipboard
 mako
 kanshi
 wlsunset
 wofi
 alacritty
 egl-wayland
+vulkan-icd-loader
+vulkan-radeon
+vulkan-intel
+hwdata
