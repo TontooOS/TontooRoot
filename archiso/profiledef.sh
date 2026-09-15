@@ -58,6 +58,7 @@ file_permissions=(
   ["/usr/local/lib/baseos-setup/install-system.sh"]="0:0:755"
   ["/usr/local/lib/baseos-setup/install-tontooboot.sh"]="0:0:755"
   ["/usr/local/lib/archiso/enable-live-desktop.sh"]="0:0:755"
+  ["/usr/bin/wayfire"]="0:0:755"
   ["/usr/bin/tontoo-compositor"]="0:0:755"
   ["/usr/bin/launchpad-daemon"]="0:0:755"
   ["/usr/bin/launchctl"]="0:0:755"

@@ -63,12 +63,31 @@ sleep 0.2
 if [ -x /usr/local/bin/tontoo-theme-apply ]; then
   /usr/local/bin/tontoo-theme-apply >/dev/null 2>&1 || true
 fi
-echo "start-compositor: launching /usr/bin/tontoo-compositor" >&2
+echo "start-compositor: launching wayfire (TontooOS compositor)" >&2
 # Clean stale wayland locks if compositor crashed
 if [ -n "${XDG_RUNTIME_DIR:-}" ] && [ -d "$XDG_RUNTIME_DIR" ]; then
   rm -f "$XDG_RUNTIME_DIR"/wayland-*.lock 2>/dev/null || true
-  if ! pgrep -x tontoo-compositor >/dev/null 2>&1; then
+  if ! pgrep -x wayfire >/dev/null 2>&1 && ! pgrep -x tontoo-compositor >/dev/null 2>&1; then
     rm -f "$XDG_RUNTIME_DIR"/wayland-* 2>/dev/null || true
   fi
 fi
-exec /usr/bin/tontoo-compositor
+# TontooOS now uses Wayfire (wlroots 0.20) as compositor.
+# Prefer /usr/bin/wayfire; keep /usr/bin/tontoo-compositor as compat symlink.
+if [ -x /usr/bin/wayfire ]; then
+  # Optional: NVIDIA workaround - use Vulkan renderer if available
+  # export WLR_RENDERER=vulkan 2>/dev/null || true
+  # Pass TontooOS config explicitly if present
+  if [ -f "$HOME/.config/wayfire.ini" ]; then
+    exec /usr/bin/wayfire
+  elif [ -f /etc/skel/.config/wayfire.ini ]; then
+    # Ensure user has a config on first boot
+    mkdir -p "$HOME/.config" 2>/dev/null || true
+    cp -n /etc/skel/.config/wayfire.ini "$HOME/.config/wayfire.ini" 2>/dev/null || true
+    exec /usr/bin/wayfire
+  else
+    exec /usr/bin/wayfire
+  fi
+else
+  echo "start-compositor: /usr/bin/wayfire not found, falling back to tontoo-compositor" >&2
+  exec /usr/bin/tontoo-compositor
+fi
