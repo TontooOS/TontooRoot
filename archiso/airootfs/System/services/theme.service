@@ -4,4 +4,5 @@ type: sys
 user: liveuser
 depends_on:
   - dbus
+  - live-setup
 restart: false

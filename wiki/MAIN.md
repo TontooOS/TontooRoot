@@ -37,6 +37,15 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-17: Fixed `theme` service crash `HOME: unbound variable` on the
+  live ISO: `/usr/local/bin/tontoo-theme-apply` used `${HOME}` under
+  `set -u`, but LaunchPad sets `HOME` from `/etc/passwd` only when `user:`
+  resolves — `theme` started before `live-setup` created `liveuser`, so
+  `HOME` was empty and the script exited `1`. The script now resolves
+  `HOME` best effort (`getent passwd liveuser`, fallback `/root`) and uses
+  `HOME_DIR` for all paths, so it always exits `0`. `theme.service` gained
+  a `live-setup` dependency (`dbus`, `live-setup`) so the user exists
+  before the themed boot path runs.
 - 2026-09-15: Fixed `theme` service stuck at `restarting` on the live
   ISO: `/usr/local/bin/tontoo-theme-apply` shipped without the exec
   bit, so LaunchPad spawn failed and the tick loop retried with

@@ -16,7 +16,21 @@
 #   Flatpak ...... vendor-recommended filesystem overrides (only if flatpak exists)
 set -u
 
-THEME_CONF="${HOME}/.config/tontoo/theme.conf"
+# --- HOME must never be unbound (set -u is on). LaunchPad sets HOME from
+# /etc/passwd when `user:` resolves, but theme can start before live-setup
+# creates liveuser, so HOME may be empty. Resolve best effort, never abort. ---
+if [[ -z "${HOME:-}" ]]; then
+  _home="$(getent passwd liveuser 2>/dev/null | cut -d: -f6)"
+  if [[ -n "${_home:-}" ]]; then
+    export HOME="${_home}"
+  else
+    export HOME="/root"
+  fi
+  unset _home
+fi
+HOME_DIR="${HOME:-/root}"
+
+THEME_CONF="${HOME_DIR}/.config/tontoo/theme.conf"
 MODE="dark"
 if [[ -f "${THEME_CONF}" ]]; then
   case "$(tr '[:upper:]' '[:lower:]' < "${THEME_CONF}" | tr -d '\n\r\t ')" in
@@ -77,7 +91,7 @@ fi
 
 # --- GTK 3/4 settings.ini (read directly by GTK apps, no bus needed) ---
 for ver in 3.0 4.0; do
-  dir="${HOME}/.config/gtk-${ver}"
+  dir="${HOME_DIR}/.config/gtk-${ver}"
   mkdir -p "${dir}" 2>/dev/null || continue
   cat > "${dir}/settings.ini" <<EOF
 [Settings]
@@ -96,7 +110,7 @@ done
   printf 'gtk-theme-name="%s"\n' "${GTK_THEME}"
   printf 'gtk-icon-theme-name="%s"\n' "${ICON_THEME}"
   printf 'gtk-font-name="%s"\n' "${FONT_UI}"
-} > "${HOME}/.gtkrc-2.0" 2>/dev/null || true
+} > "${HOME_DIR}/.gtkrc-2.0" 2>/dev/null || true
 
 # --- Qt5/Qt6 via qt5ct/qt6ct: Fusion + TontooOS palette + icons + fonts ---
 write_qt_colors() { # <dir> (e.g. ~/.config/qt5ct)
@@ -134,13 +148,13 @@ fixed=${FONT_MONO}
 general=${FONT_UI}
 EOF
 }
-write_qt_colors "${HOME}/.config/qt5ct"
-write_qt_colors "${HOME}/.config/qt6ct"
-write_qt_conf "${HOME}/.config/qt5ct" "qt5ct.conf"
-write_qt_conf "${HOME}/.config/qt6ct" "qt6ct.conf"
+write_qt_colors "${HOME_DIR}/.config/qt5ct"
+write_qt_colors "${HOME_DIR}/.config/qt6ct"
+write_qt_conf "${HOME_DIR}/.config/qt5ct" "qt5ct.conf"
+write_qt_conf "${HOME_DIR}/.config/qt6ct" "qt6ct.conf"
 
 # --- Chromium: prefer Wayland when available, fall back to X11 ---
-printf '%s\n' '--ozone-platform-hint=auto' > "${HOME}/.config/chromium-flags.conf" 2>/dev/null || true
+printf '%s\n' '--ozone-platform-hint=auto' > "${HOME_DIR}/.config/chromium-flags.conf" 2>/dev/null || true
 
 # --- Flatpak: let sandboxed apps see the system GTK configs (vendor advice) ---
 if have flatpak; then
