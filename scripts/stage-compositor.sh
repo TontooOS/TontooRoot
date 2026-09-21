@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-# Build the TontooOS compositor (Wayfire 0.12, wlroots 0.20) and place the
-# binary into the live ISO airootfs at /usr/bin/wayfire + compat symlink
-# /usr/bin/tontoo-compositor. Also installs the TontooOS wayfire.ini to
-# /etc/skel/.config/wayfire.ini and /usr/share/wayfire/wayfire.ini.tontoo.
+# Build the TontooOS compositor (Wayfire 0.12, wlroots 0.20) and install it
+# into the live ISO airootfs via `DESTDIR=airootfs ninja install`: binary
+# /usr/bin/wayfire + compat symlink /usr/bin/tontoo-compositor, bundled
+# shared libs (libwlroots-0.20, libwf-config, libwf-utils, libyyjson),
+# plugins (/usr/lib/wayfire) and metadata. Also installs the TontooOS
+# wayfire.ini to /etc/skel/.config/wayfire.ini and
+# /usr/share/wayfire/wayfire.ini.tontoo.
 #
 # This replaces the previous smithay Rust compositor (archived at
 # ../compositor_backup_*). Wayfire is built via meson/ninja with bundled
@@ -88,13 +91,35 @@ meson setup "${compositor_dir}" "${build_dir}" \
 
 ninja -C "${build_dir}" -j"$(nproc 2>/dev/null || echo 4)"
 
-mkdir -p "${dest_dir}"
-if [[ -f "${build_dir}/src/wayfire" ]]; then
-  cp -f "${build_dir}/src/wayfire" "${dest_dir}/wayfire"
+airootfs_dir="${profile_dir}/airootfs"
+mkdir -p "${dest_dir}" "${airootfs_dir}"
+
+# Full install into airootfs (binary + bundled libs + plugins + metadata).
+# A binary-only copy is NOT enough: wayfire links against the bundled
+# wlroots 0.20 / wf-config / wf-utils / wf-json builds, so without
+# `ninja install` the live system misses libwlroots-0.20.so,
+# libwf-config.so.1, libwf-utils.so.0, libyyjson.so.0 and all
+# /usr/lib/wayfire plugins (live symptom: start-compositor.sh loops,
+# `ldd /usr/bin/wayfire` shows "not found", no WAYLAND_DISPLAY).
+echo "==> Installing wayfire + bundled libs/plugins into airootfs..."
+if ! DESTDIR="${airootfs_dir}" ninja -C "${build_dir}" install; then
+  echo "WARNING: stage-compositor: 'ninja install' failed, falling back to binary-only copy." >&2
+  if [[ -f "${build_dir}/src/wayfire" ]]; then
+    cp -f "${build_dir}/src/wayfire" "${dest_dir}/wayfire"
+    chmod 0755 "${dest_dir}/wayfire"
+  else
+    echo "WARNING: stage-compositor: wayfire was not built, skipping." >&2
+  fi
+fi
+
+if [[ -f "${dest_dir}/wayfire" ]]; then
   chmod 0755 "${dest_dir}/wayfire"
   # Compat symlink: old start-compositor.sh and LaunchPad services referenced /usr/bin/tontoo-compositor
   ln -sf wayfire "${dest_dir}/tontoo-compositor"
   echo "==> Compositor binary -> ${dest_dir}/wayfire (symlink tontoo-compositor)"
+  # Shared libs must stay executable after staging (squashfs keeps staged modes).
+  find "${airootfs_dir}/usr/lib" \( -name 'libwlroots-0.20.so*' -o -name 'libwf-*.so*' -o -name 'libyyjson.so*' \) -exec chmod 0755 {} + 2>/dev/null || true
+  find "${airootfs_dir}/usr/lib/wayfire" -name '*.so' -exec chmod 0755 {} + 2>/dev/null || true
 else
   echo "WARNING: stage-compositor: wayfire was not built, skipping." >&2
 fi

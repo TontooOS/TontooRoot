@@ -37,6 +37,18 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-21: Fixed compositor missing on LiveOS: `stage-compositor.sh`
+  copied only `build/src/wayfire` into the ISO, so the live system missed
+  the bundled shared libs (`libwlroots-0.20.so`, `libwf-config.so.1`,
+  `libwf-utils.so.0`, `libyyjson.so.0`) and all `/usr/lib/wayfire`
+  plugins (`ldd /usr/bin/wayfire` showed `not found`,
+  `start-compositor.sh` restart-looped, no `WAYLAND_DISPLAY`). The stage
+  now runs `DESTDIR=airootfs ninja install` (binary + libs + plugins +
+  metadata) with a binary-only fallback, fixes staged `.so` modes to
+  `0755`, and `.gitignore` covers the new staged paths
+  (`usr/bin/wayfire`, `usr/lib/libwlroots*`, `libwf-*`, `libyyjson*`,
+  `usr/lib/wayfire/`, `usr/share/wayfire/`). See the compositor
+  `Building.md` Stage for ISO section.
 - 2026-09-17: Fixed `theme` service crash `HOME: unbound variable` on the
   live ISO: `/usr/local/bin/tontoo-theme-apply` used `${HOME}` under
   `set -u`, but LaunchPad sets `HOME` from `/etc/passwd` only when `user:`
