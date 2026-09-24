@@ -37,6 +37,12 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-24: Fixed compositor stage abort on a dangling
+  `tontoo-compositor -> wayfire` symlink in the staged airootfs:
+  `stage-compositor.sh` removes any existing file or symlink at
+  `/usr/bin/tontoo-compositor` before copying the freshly built Smithay
+  binary, so plain `cp -f` no longer refuses to write through the stale
+  Wayfire leftover.
 - 2026-09-24: Reverted the ISO compositor stage from Wayfire back to the
   Smithay `tontoo-compositor` (`stage-compositor.sh`): cargo
   `--release --no-default-features --features udev` stages

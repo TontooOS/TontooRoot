@@ -48,6 +48,11 @@ cargo build --release --no-default-features --features udev
 
 mkdir -p "${dest_dir}"
 if [[ -f "${compositor_dir}/target/release/tontoo-compositor" ]]; then
+  # The airootfs tree may contain a dangling symlink at the destination
+  # (leftover from a previous stage run or from the profile skeleton).
+  # Plain `cp -f` refuses to write through a dangling symlink, so remove
+  # any existing file/symlink first, then copy the fresh binary.
+  rm -f "${dest}"
   cp -f "${compositor_dir}/target/release/tontoo-compositor" "${dest}"
   chmod 0755 "${dest}"
   echo "==> Compositor binary -> ${dest}"
