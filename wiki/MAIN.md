@@ -37,6 +37,16 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-24: Reverted the ISO compositor stage from Wayfire back to the
+  Smithay `tontoo-compositor` (`stage-compositor.sh`): cargo
+  `--release --no-default-features --features udev` stages
+  `/usr/bin/tontoo-compositor` again; meson/ninja, bundled wlroots and
+  `wayfire.ini` staging removed. `start-compositor.sh` execs
+  `tontoo-compositor --udev`; `tontoo.desktop` points at the Smithay
+  binary; `wayfire.desktop`, the skel `wayfire.ini` and staged
+  `/usr/bin/wayfire` + `/usr/share/wayfire` leftovers deleted;
+  `profiledef.sh`, `customize_airootfs.sh`, `packages.x86_64` and
+  `.gitignore` no longer reference Wayfire paths.
 - 2026-09-21: Fixed compositor missing on LiveOS: `stage-compositor.sh`
   copied only `build/src/wayfire` into the ISO, so the live system missed
   the bundled shared libs (`libwlroots-0.20.so`, `libwf-config.so.1`,

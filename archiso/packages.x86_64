@@ -87,9 +87,7 @@ libinput
 iptables
 shared-mime-info
 desktop-file-utils
-# TontooCompositor - Wayfire 0.12 (wlroots 0.20, built from source)
-# Note: wayfire/wf-config/wlroots are built via stage-compositor.sh,
-# not from pacman (system wayfire 0.11 would conflict with our 0.12).
+# TontooCompositor - Smithay (built from source via stage-compositor.sh)
 # Runtime deps below:
 swaybg
 swaylock

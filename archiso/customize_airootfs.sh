@@ -48,22 +48,6 @@ EOF
 # Ensure LaunchPad services directory exists
 mkdir -p System/services
 
-# TontooOS Wayfire config - ensure SF Pro wayfire.ini is in skel (stage-compositor already copies it,
-# but handle case where stage was skipped on Windows host)
-if [ -f ../../compositor/wayfire.ini ]; then
-  mkdir -p etc/skel/.config
-  cp -f ../../compositor/wayfire.ini etc/skel/.config/wayfire.ini 2>/dev/null || true
-  mkdir -p usr/share/wayfire
-  cp -f ../../compositor/wayfire.ini usr/share/wayfire/wayfire.ini.tontoo 2>/dev/null || true
-  if [ -f ../../compositor/wayfire.ini.upstream ]; then
-    cp -f ../../compositor/wayfire.ini.upstream usr/share/wayfire/wayfire.ini.upstream 2>/dev/null || true
-  fi
-fi
-# Also ensure a fallback wayfire.ini exists even if compositor/ not present (e.g. CI)
-if [ ! -f etc/skel/.config/wayfire.ini ] && [ -f usr/share/wayfire/wayfire.ini.tontoo ]; then
-  cp -f usr/share/wayfire/wayfire.ini.tontoo etc/skel/.config/wayfire.ini 2>/dev/null || true
-fi
-
 # Ensure machine-id is empty so systemd generates a fresh one on boot
 # (prevents dconf "Cannot spawn a message bus without a machine-id")
 : > etc/machine-id

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=TontooOS
+Comment=TontooOS Desktop - TontooCompositor (Smithay)
+Exec=tontoo-compositor --udev
+TryExec=tontoo-compositor
+Type=Application
+DesktopNames=TontooOS
