@@ -37,6 +37,10 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-28: Removed fallback terminals `foot`, `xterm` and `alacritty`
+  from the live (`packages.x86_64`) package list plus the stale
+  `/etc/foot/foot.ini` config and its installer copy. Tontoo Terminal.app
+  remains the only terminal.
 - 2026-09-28: Removed legacy Electron setup kiosk
   (`airootfs/usr/share/baseos-setup/`,
   `airootfs/usr/local/bin/baseos-setup-session`) and dropped `electron` and
