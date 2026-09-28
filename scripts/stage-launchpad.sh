@@ -2,13 +2,24 @@
 # Build the LaunchPad daemon and launchctl CLI, then place the binaries
 # into the live ISO airootfs at /usr/bin/launchpad-daemon and /usr/bin/launchctl.
 #
+# Sources are the sibling component repos next to this checkout:
+#   <checkout>/../TontooServices/LaunchPad -> launchpad-daemon (PID 1)
+#   <checkout>/../TontooProgramms/LaunchCTL -> launchctl CLI
+#   <checkout>/../TontooLibs/LaunchPad     -> lang files
+# (On Windows: C:\Users\arlo1\Documents\TontooServices\LaunchPad, etc.)
+# In --github-actions mode build-iso.sh pre-clones the same repos into
+# <checkout>/TontooServices, <checkout>/TontooProgramms and
+# <checkout>/TontooLibs, so the in-repo paths are used instead.
+# There is no legacy fallback: the old TontooLibs/LaunchPad daemon
+# workspace is gone.
+#
 # This must run on Linux with the Rust toolchain. build-iso.sh invokes it
 # before mkarchiso so the resulting ISO can boot with LaunchPad as PID 1.
 set -euo pipefail
 
 # Accepts --github-actions (forwarded by build-iso.sh). In that mode all
-# external sources are pre-cloned to the standard local paths, so this
-# script needs no path changes.
+# external sources are pre-cloned to the in-repo paths, so the sibling
+# defaults below are replaced with the clone locations.
 GITHUB_ACTIONS_BUILD=0
 for arg in "$@"; do
   case "${arg}" in
@@ -20,9 +31,15 @@ done
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 base_dir="$(cd -- "${script_dir}/../.." && pwd)"
-launchpad_lib_dir="${base_dir}/TontooLibs/LaunchPad"
-launchctl_dir="${base_dir}/TontooProgramms/LaunchCTL"
-launchpad_daemon_dir="${base_dir}/TontooServices/LaunchPad"
+if [[ "${GITHUB_ACTIONS_BUILD}" -eq 1 ]]; then
+  launchpad_daemon_dir="${LAUNCHPAD_DAEMON_DIR:-${base_dir}/TontooServices/LaunchPad}"
+  launchctl_dir="${LAUNCHCTL_DIR:-${base_dir}/TontooProgramms/LaunchCTL}"
+  launchpad_lib_dir="${TONTOO_LIBS_SRC:-${base_dir}/TontooLibs}/LaunchPad"
+else
+  launchpad_daemon_dir="${LAUNCHPAD_DAEMON_DIR:-${base_dir}/../TontooServices/LaunchPad}"
+  launchctl_dir="${LAUNCHCTL_DIR:-${base_dir}/../TontooProgramms/LaunchCTL}"
+  launchpad_lib_dir="${TONTOO_LIBS_SRC:-${base_dir}/../TontooLibs}/LaunchPad"
+fi
 dest_dir="${base_dir}/BaseOS/archiso/airootfs/usr/bin"
 
 if ! command -v cargo >/dev/null 2>&1; then
@@ -32,9 +49,9 @@ fi
 
 mkdir -p "${dest_dir}"
 
-# --- Build launchctl CLI (TontooProgramms/LaunchCTL) ---
+# --- Build launchctl CLI (sibling TontooProgramms/LaunchCTL) ---
 if [[ -d "${launchctl_dir}" ]]; then
-  echo "==> Building launchctl (TontooProgramms/LaunchCTL)..."
+  echo "==> Building launchctl (${launchctl_dir})..."
   cd "${launchctl_dir}"
   cargo build --release
   if [[ -f "${launchctl_dir}/target/release/launchctl" ]]; then
@@ -48,9 +65,9 @@ else
   echo "stage-launchpad: LaunchCTL directory not found at ${launchctl_dir}" >&2
 fi
 
-# --- Build launchpad-daemon (TontooServices/LaunchPad) ---
+# --- Build launchpad-daemon (sibling TontooServices/LaunchPad) ---
 if [[ -d "${launchpad_daemon_dir}" ]]; then
-  echo "==> Building launchpad-daemon (TontooServices/LaunchPad)..."
+  echo "==> Building launchpad-daemon (${launchpad_daemon_dir})..."
   cd "${launchpad_daemon_dir}"
   cargo build --release
   if [[ -f "${launchpad_daemon_dir}/target/release/launchpad-daemon" ]]; then
@@ -64,32 +81,13 @@ else
   echo "stage-launchpad: LaunchPad daemon directory not found at ${launchpad_daemon_dir}" >&2
 fi
 
-# Backwards compat: old workspace TontooLibs/LaunchPad built both binaries
-if [[ ! -f "${dest_dir}/launchctl" ]] || [[ ! -f "${dest_dir}/launchpad-daemon" ]]; then
-  if [[ -d "${launchpad_lib_dir}" ]] && [[ -f "${launchpad_lib_dir}/Cargo.toml" ]]; then
-    if grep -q "launchctl\|launchpad-daemon" "${launchpad_lib_dir}/Cargo.toml" 2>/dev/null; then
-      echo "==> Fallback: Building legacy TontooLibs/LaunchPad workspace..."
-      cd "${launchpad_lib_dir}"
-      cargo build --release || echo "WARNING: stage-launchpad: legacy workspace build failed." >&2
-      if [[ -f "${launchpad_lib_dir}/target/release/launchctl" ]] && [[ ! -f "${dest_dir}/launchctl" ]]; then
-        cp -f "${launchpad_lib_dir}/target/release/launchctl" "${dest_dir}/launchctl"
-        chmod 0755 "${dest_dir}/launchctl"
-      fi
-      if [[ -f "${launchpad_lib_dir}/target/release/launchpad-daemon" ]] && [[ ! -f "${dest_dir}/launchpad-daemon" ]]; then
-        cp -f "${launchpad_lib_dir}/target/release/launchpad-daemon" "${dest_dir}/launchpad-daemon"
-        chmod 0755 "${dest_dir}/launchpad-daemon"
-      fi
-    fi
-  fi
-fi
-
 if [[ ! -f "${dest_dir}/launchctl" ]] || [[ ! -f "${dest_dir}/launchpad-daemon" ]]; then
   echo "WARNING: stage-launchpad: one or more binaries missing (launchctl/launchpad-daemon)." >&2
 fi
 
 echo "==> LaunchPad binaries -> ${dest_dir}"
 
-# Stage LaunchPad language files (remain in TontooLibs/LaunchPad)
+# Stage LaunchPad language files (sibling TontooLibs/LaunchPad)
 lang_dest="${base_dir}/BaseOS/archiso/airootfs/usr/share/launchpad/lang"
 mkdir -p "${lang_dest}"
 if [[ -d "${launchpad_lib_dir}/lang" ]]; then

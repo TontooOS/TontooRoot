@@ -37,6 +37,11 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-28: `stage-launchpad.sh` builds strictly from the sibling
+  component repos (`../TontooServices/LaunchPad` daemon,
+  `../TontooProgramms/LaunchCTL` CLI, `../TontooLibs/LaunchPad` lang);
+  the legacy `TontooLibs/LaunchPad` daemon fallback is removed. In
+  `--github-actions` mode the CI-cloned in-repo paths are used.
 - 2026-09-24: Fixed compositor stage abort on a dangling
   `tontoo-compositor -> wayfire` symlink in the staged airootfs:
   `stage-compositor.sh` removes any existing file or symlink at
