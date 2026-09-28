@@ -37,6 +37,11 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-28: Removed legacy Electron setup kiosk
+  (`airootfs/usr/share/baseos-setup/`,
+  `airootfs/usr/local/bin/baseos-setup-session`) and dropped `electron` and
+  `pavucontrol` from the live (`packages.x86_64`) and target
+  (`install-system.sh`) package lists. The shell installer backend is kept.
 - 2026-09-28: `stage-launchpad.sh` builds strictly from the sibling
   component repos (`../TontooServices/LaunchPad` daemon,
   `../TontooProgramms/LaunchCTL` CLI, `../TontooLibs/LaunchPad` lang);

@@ -1,9 +1,10 @@
 # Installer
 
-The Installer is the destructive Arch installer that runs from the live ISO
-after the final `Install` confirmation in the Electron setup screen. Its entry
-point is `/usr/local/lib/baseos-setup/install-system.sh` (called with the JSON
-settings file as `$1` and using `/mnt` as the target mount).
+The Installer is the destructive Arch installer that runs from the live ISO.
+Its entry point is `/usr/local/lib/baseos-setup/install-system.sh` (called
+with the JSON settings file as `$1` and using `/mnt` as the target mount).
+The legacy Electron setup kiosk was removed; the shell backend is kept for
+manual use and for the replacement installer.
 
 ## Configuration Parsing
 
@@ -29,7 +30,7 @@ ssh_port="$(json_value sshPort 22)"
 2. The selected disk is wiped (GPT, BIOSBOOT + ESP + ROOT), formatted and
    mounted at `/mnt`.
 3. `pacstrap -K` installs the `packages` array, which includes `chromium`,
-   `electron`, `archlinux-keyring`, `networkmanager`, `pipewire`,
+   `archlinux-keyring`, `networkmanager`, `pipewire`,
    `refind`, `grub`, `librsvg` and the desktop stack.
 4. Locale, keyboard, timezone, hostname, users (`/Users/<name>`, `wheel` sudo),
    SSH config and LaunchPad services are written to the target.
@@ -58,8 +59,9 @@ copied them to every target system. That runtime, its hook, its
 
 - Deleted: `airootfs/usr/local/lib/archiso/install-node-runtime.sh`
 - Deleted: `airootfs/etc/pacman.d/hooks/50-install-node-runtime.hook`
-- The Electron setup screen is unaffected because Electron ships its own
-  bundled runtime.
+- Removed: legacy Electron setup kiosk (`airootfs/usr/share/baseos-setup/`,
+  `airootfs/usr/local/bin/baseos-setup-session`, `electron` live and target
+  package). The shell backend (`install-system.sh`) is kept.
 
 ## Usage / Example
 

@@ -98,7 +98,6 @@ find "${profile_dir}/airootfs" -name '*.sh' -exec sed -i -e 's/\r$//' -e '1s/^\x
 # Ensure airootfs helper scripts are executable (NTFS loses +x)
 echo "==> Fixing permissions on airootfs scripts..."
 chmod 0755 "${profile_dir}/airootfs/usr/local/bin/"* 2>/dev/null || true
-chmod 0755 "${profile_dir}/airootfs/usr/local/bin/baseos-setup-session" 2>/dev/null || true
 chmod 0755 "${profile_dir}/airootfs/usr/local/lib/archiso/enable-live-desktop.sh" 2>/dev/null || true
 
 sudo_cmd=()

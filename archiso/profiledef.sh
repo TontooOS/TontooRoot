@@ -54,7 +54,6 @@ file_permissions=(
   ["/Applications/Terminal.app/App/terminal"]="0:0:755"
   ["/etc/sudoers.d"]="0:0:750"
   ["/etc/sudoers.d/00-liveuser"]="0:0:440"
-  ["/usr/local/bin/baseos-setup-session"]="0:0:755"
   ["/usr/local/lib/baseos-setup/install-system.sh"]="0:0:755"
   ["/usr/local/lib/baseos-setup/install-tontooboot.sh"]="0:0:755"
   ["/usr/local/lib/archiso/enable-live-desktop.sh"]="0:0:755"

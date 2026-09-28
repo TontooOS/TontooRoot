@@ -681,7 +681,6 @@ packages=(
   dosfstools
   e2fsprogs
   efibootmgr
-  electron
   exfatprogs
   f2fs-tools
   git
@@ -705,7 +704,6 @@ packages=(
   openssh
   open-vm-tools
   otf-font-awesome
-  pavucontrol
   pipewire
   pipewire-alsa
   pipewire-pulse

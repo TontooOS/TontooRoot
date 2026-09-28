@@ -43,8 +43,6 @@ mkdir -p /run/liveuser
 chown liveuser:liveuser /run/liveuser
 chmod 700 /run/liveuser
 
-chmod 0755 /usr/local/bin/baseos-setup-session 2>/dev/null || true
-
 # Valid machine IDs: dbus + dconf refuse empty/invalid files, so never
 # copy a possibly empty /etc/machine-id over blindly.
 if command -v systemd-machine-id-setup >/dev/null 2>&1; then

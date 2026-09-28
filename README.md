@@ -47,9 +47,9 @@ The default icon from `icons/tontoo_default.png` is installed into the live syst
 /usr/share/pixmaps/tontoo-default.png
 ```
 
-It is used for the Electron setup window, the short setup startup splash, and the `liveuser` account icon.
+It is used for the short setup startup splash and the `liveuser` account icon.
 
-The boot path also uses a black Plymouth splash theme with a small centered Octopus icon and a thin bottom progress bar. Kernel/systemd boot output is suppressed with quiet boot parameters, and `systemd-firstboot` is masked so the live ISO does not stop on an interactive timezone prompt before the setup screen.
+The boot path also uses a black Plymouth splash theme with a small centered Octopus icon and a thin bottom progress bar. Kernel/systemd boot output is suppressed with quiet boot parameters, and `systemd-firstboot` is masked so the live ISO does not stop on an interactive timezone prompt.
 
 ## Sounds
 

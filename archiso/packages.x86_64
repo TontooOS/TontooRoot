@@ -11,7 +11,6 @@ gsettings-desktop-schemas
 dosfstools
 e2fsprogs
 efibootmgr
-electron
 exfatprogs
 f2fs-tools
 git
@@ -42,7 +41,6 @@ open-vm-tools
 otf-font-awesome
 pacman
 parted
-pavucontrol
 pipewire-pulse
 pipewire
 pipewire-alsa
