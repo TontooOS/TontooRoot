@@ -11,8 +11,4 @@ source "${APP_LIB}"
 tontoo_msg "Installing VSCode..." "Installiere VSCode..."
 sudo pacman -S --needed --noconfirm code
 
-# Custom title bar + follow the OS color scheme (portal value written
-# by tontoo-theme-apply). Existing user keys are preserved.
-tontoo_vscode_config
-
 tontoo_msg "VSCode installed." "VSCode installiert."
