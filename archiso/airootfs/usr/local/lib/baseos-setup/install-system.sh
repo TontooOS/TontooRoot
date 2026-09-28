@@ -674,15 +674,11 @@ packages=(
   base
   bash
   btrfs-progs
-  chromium
   curl
   dbus-broker
   dosfstools
   e2fsprogs
   efibootmgr
-  exfatprogs
-  f2fs-tools
-  git
   glib2
   gptfdisk
   grub
@@ -694,14 +690,11 @@ packages=(
   linux
   linux-firmware
   mesa
-  mtools
   nano
   networkmanager
   noto-fonts
   noto-fonts-emoji
-  ntfs-3g
   openssh
-  open-vm-tools
   otf-font-awesome
   pipewire
   pipewire-alsa
@@ -709,15 +702,10 @@ packages=(
   plymouth
   polkit
   python
-  python-pip
-  qemu-guest-agent
-
   seatd
-  spice-vdagent
   sudo
   ttf-dejavu
   util-linux
-  virtualbox-guest-utils
   wireplumber
   wl-clipboard
   xdg-desktop-portal
@@ -726,7 +714,6 @@ packages=(
   xf86-video-fbdev
   xf86-video-qxl
   xf86-video-vesa
-  xfsprogs
   xorg-server
   xorg-xwayland
   zsh

@@ -37,6 +37,13 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-28: Removed `rust`, `chromium`, `xorg-xcursorgen`, `qt5ct`,
+  `qt6ct`, all VM guest agents (`open-vm-tools`, `qemu-guest-agent`,
+  `virtualbox-guest-utils`, `spice-vdagent`), `python-pip`, extra
+  filesystem tools (`f2fs-tools`, `xfsprogs`, `exfatprogs`, `ntfs-3g`,
+  `mtools`) and `git` from the live (`packages.x86_64`) and, where
+  present, target (`install-system.sh`) package lists. No browser ships
+  by default; install one on demand via `pacman`.
 - 2026-09-28: Removed fallback terminals `foot`, `xterm` and `alacritty`
   from the live (`packages.x86_64`) package list plus the stale
   `/etc/foot/foot.ini` config and its installer copy. Tontoo Terminal.app

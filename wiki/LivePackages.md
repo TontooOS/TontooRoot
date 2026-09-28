@@ -5,13 +5,7 @@ the live session keeps `pacman` usable without manual repair.
 
 ## Browser
 
-`chromium` is a first-class live package:
-
-- Declared in `archiso/packages.x86_64`, so `mkarchiso` bakes it into every ISO.
-- Declared in the `packages` array of
-  `airootfs/usr/local/lib/baseos-setup/install-system.sh`, so installed target
-  systems also receive it via `pacstrap -K`.
-- Verified on a live VM with `chromium --version`.
+No browser ships by default. Install one on demand via `pacman`:
 
 ```bash
 sudo pacman -Sy --noconfirm chromium
@@ -43,7 +37,7 @@ On a fresh live boot, installing a package works without manual keyring repair:
 
 ```bash
 ssh -p 2222 liveuser@127.0.0.1
-sudo pacman -Sy --noconfirm chromium
+sudo pacman -Sy --noconfirm htop
 ```
 
 ## Cross References

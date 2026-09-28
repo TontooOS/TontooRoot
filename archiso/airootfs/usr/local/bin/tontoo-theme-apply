@@ -12,7 +12,6 @@
 #   GTK2/3/4 ..... settings.ini + .gtkrc-2.0 + gsettings
 #   Qt5/Qt6 ...... qt5ct/qt6ct.conf (Fusion + TontooOS palette + MacTahoe icons + SF Pro)
 #   Portal ....... gsettings color-scheme/accent (xdg-desktop-portal-gtk serves it)
-#   Chromium ..... ~/.config/chromium-flags.conf (Wayland auto-select)
 #   Flatpak ...... vendor-recommended filesystem overrides (only if flatpak exists)
 set -u
 
@@ -152,9 +151,6 @@ write_qt_colors "${HOME_DIR}/.config/qt5ct"
 write_qt_colors "${HOME_DIR}/.config/qt6ct"
 write_qt_conf "${HOME_DIR}/.config/qt5ct" "qt5ct.conf"
 write_qt_conf "${HOME_DIR}/.config/qt6ct" "qt6ct.conf"
-
-# --- Chromium: prefer Wayland when available, fall back to X11 ---
-printf '%s\n' '--ozone-platform-hint=auto' > "${HOME_DIR}/.config/chromium-flags.conf" 2>/dev/null || true
 
 # --- Flatpak: let sandboxed apps see the system GTK configs (vendor advice) ---
 if have flatpak; then

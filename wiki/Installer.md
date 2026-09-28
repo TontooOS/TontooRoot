@@ -29,7 +29,7 @@ ssh_port="$(json_value sshPort 22)"
    `archlinux-keyring` package.
 2. The selected disk is wiped (GPT, BIOSBOOT + ESP + ROOT), formatted and
    mounted at `/mnt`.
-3. `pacstrap -K` installs the `packages` array, which includes `chromium`,
+3. `pacstrap -K` installs the `packages` array, which includes
    `archlinux-keyring`, `networkmanager`, `pipewire`,
    `refind`, `grub`, `librsvg` and the desktop stack.
 4. Locale, keyboard, timezone, hostname, users (`/Users/<name>`, `wheel` sudo),
