@@ -529,6 +529,8 @@ install_tontooboot_into_target() {
 
   cp -f "${target_mount}/usr/share/tontooboot/refind.conf" "${refind_dir}/refind.conf"
   cp -f "${target_mount}/usr/share/tontooboot/theme.conf" "${theme_dst}/theme.conf"
+  cp -f "${target_mount}/usr/share/tontooboot/selection-big.png" "${theme_dst}/selection-big.png" 2>/dev/null || true
+  cp -f "${target_mount}/usr/share/tontooboot/selection-small.png" "${theme_dst}/selection-small.png" 2>/dev/null || true
   cp -a "${target_mount}/usr/share/tontooboot/lang/." "${theme_dst}/lang/" 2>/dev/null || true
 
   if command -v rsvg-convert >/dev/null 2>&1; then

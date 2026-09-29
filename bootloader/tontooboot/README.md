@@ -16,6 +16,8 @@ tontooboot/
 ├── refind.conf
 ├── theme.conf
 ├── install-tontooboot.sh
+├── selection-big.png
+├── selection-small.png
 ├── icons/
 │   ├── os_tontoo.svg
 │   ├── tool_recovery.svg
@@ -24,6 +26,10 @@ tontooboot/
     ├── en_us.json
     └── de_de.json
 ```
+
+`selection-big.png` (144x144) and `selection-small.png` (48x48) are
+pre-rendered orange `#ff6b2b` selection rings, committed to the repo so
+no Python is needed at install time.
 
 ## Install on target
 

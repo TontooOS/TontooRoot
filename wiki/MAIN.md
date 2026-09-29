@@ -37,6 +37,14 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-28: Pre-rendered the TontooBoot selection rings
+  (`selection-big.png` 144x144, `selection-small.png` 48x48, orange
+  `#ff6b2b`) and committed them in `BaseOS/bootloader/tontooboot/`.
+  `install-tontooboot.sh` copies them instead of generating PNGs with
+  Python (both Python blocks removed, including the dead light-mode
+  placeholder), `stage-tontooboot.sh` stages them to
+  `/usr/share/tontooboot`, and `install-system.sh` now also copies the
+  rings into the target ESP theme (previously missing there).
 - 2026-09-28: Removed `rust`, `chromium`, `xorg-xcursorgen`, `qt5ct`,
   `qt6ct`, all VM guest agents (`open-vm-tools`, `qemu-guest-agent`,
   `virtualbox-guest-utils`, `spice-vdagent`), `python-pip`, extra

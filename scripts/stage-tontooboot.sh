@@ -28,6 +28,8 @@ mkdir -p "${theme_dst}/icons" "$(dirname -- "${setup_dst}")"
 
 cp -f "${src_dir}/refind.conf" "${theme_dst}/"
 cp -f "${src_dir}/theme.conf" "${theme_dst}/"
+cp -f "${src_dir}/selection-big.png" "${theme_dst}/"
+cp -f "${src_dir}/selection-small.png" "${theme_dst}/"
 cp -f "${src_dir}/README.md" "${theme_dst}/" 2>/dev/null || true
 cp -a "${src_dir}/icons/." "${theme_dst}/icons/"
 cp -a "${src_dir}/lang" "${theme_dst}/" 2>/dev/null || true

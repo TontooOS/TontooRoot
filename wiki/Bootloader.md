@@ -32,11 +32,18 @@ Staged paths:
 ```text
 /usr/share/tontooboot/refind.conf
 /usr/share/tontooboot/theme.conf
+/usr/share/tontooboot/selection-big.png
+/usr/share/tontooboot/selection-small.png
 /usr/share/tontooboot/icons/
 /usr/share/tontooboot/lang/en_us.json
 /usr/share/tontooboot/lang/de_de.json
 /usr/local/lib/baseos-setup/install-tontooboot.sh
 ```
+
+The selection rings are pre-rendered 144x144 and 48x48 PNGs
+(TontooOS Orange `#ff6b2b`) committed in
+`BaseOS/bootloader/tontooboot/`, so the installers copy them instead
+of generating PNGs at runtime.
 
 ## Install
 
