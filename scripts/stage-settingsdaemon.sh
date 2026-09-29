@@ -67,7 +67,7 @@ chmod 0755 "${dest_dir}/App/settings-daemon"
 # Bundle metadata follows the daemon crate version (never hardcoded:
 # versions are owned by the component repos).
 daemon_version="$(grep -m1 '^version' "${daemon_dir}/Cargo.toml" | sed -E 's/.*\"([^\"]+)\".*/\1/')"
-daemon_version="${daemon_version:-26.1.0}"
+daemon_version="${daemon_version:-27.0.0}"
 cat > "${dest_dir}/Info.tontoo" <<EOF
 {
   "bundle_id": "com.tontoo.settingsdaemon",
