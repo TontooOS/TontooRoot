@@ -92,7 +92,7 @@ skipped when absent.
 
 ## License
 
-TCL v26.1, see [LICENSE.md](LICENSE.md).
+TCL v27.0, see [LICENSE.md](LICENSE.md).
 
 Third-party components (MacTahoe theme and cursors, TontooOS sound theme,
 SF Pro fonts, wallpapers) remain under their respective licenses.
