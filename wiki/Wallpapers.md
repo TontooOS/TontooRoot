@@ -15,6 +15,7 @@ Each pack is one subdirectory named in upper case. Every pack ships a
 ├── DEPTH/
 ├── FLOW/
 ├── GOLDENGATE/
+├── LEGACYTIMES/
 ├── MOJAVE/
 ├── MONTEREY/
 ├── PRISM/
@@ -34,6 +35,17 @@ never deleted, so variants stay reproducible:
 
 ```bash
 python3 temp/generate_3d_wallpapers.py --packs VORTEX,PRISM,DEPTH
+```
+
+The `LEGACYTIMES` pack is retro 2005-2010 nostalgia in modern render
+quality (5120x2880 `LIGHT.png` + `DARK.png`): a Bliss-hill homage with
+Aero gloss bubbles by day, a Vista-aurora night with moon, stars and a
+sodium-lamp horizon glow. Its generator is kept at
+`temp/generate_legacy_times.py` in the TontooOS checkout and is never
+deleted:
+
+```bash
+python3 temp/generate_legacy_times.py
 ```
 
 Example manifest (`THAOELAKE/wallpaper.fish`):

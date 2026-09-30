@@ -37,6 +37,12 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-30: Added `LEGACYTIMES` wallpaper pack
+  (`BaseOS/wallpapers/LEGACYTIMES/LIGHT.png` + `DARK.png`, 5120x2880):
+  retro 2005-2010 nostalgia, Bliss hill with Aero gloss by day and
+  Vista-aurora night with a sodium-lamp glow. Generator kept at
+  `temp/generate_legacy_times.py`. See [Wallpapers.md](Wallpapers.md).
+
 - 2026-09-30: Added `DEPTH`, `PRISM` and `VORTEX` wallpaper packs
   (`BaseOS/wallpapers/<PACK>/LIGHT.png` + `DARK.png`, 5120x2880): generated
   3D glass-ribbon flow waves with Light/Dark variants. Generator kept at
