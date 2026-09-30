@@ -39,8 +39,8 @@ python3 temp/generate_3d_wallpapers.py --packs VORTEX,PRISM,DEPTH
 
 The `LEGACYTIMES` pack is retro 2005-2010 nostalgia in modern render
 quality (5120x2880 `LIGHT.png` + `DARK.png`): a Bliss-hill homage with
-Aero gloss bubbles by day, a Vista-aurora night with moon, stars and a
-sodium-lamp horizon glow. Its generator is kept at
+Aero gloss bubbles by day, a starry night with moon and a blurry old
+orange sodium street lamp (no LED white, no stripes). Its generator is kept at
 `temp/generate_legacy_times.py` in the TontooOS checkout and is never
 deleted:
 
