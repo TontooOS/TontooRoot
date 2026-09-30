@@ -37,6 +37,11 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-30: Added `DEPTH`, `PRISM` and `VORTEX` wallpaper packs
+  (`BaseOS/wallpapers/<PACK>/LIGHT.png` + `DARK.png`, 5120x2880): generated
+  3D glass-ribbon flow waves with Light/Dark variants. Generator kept at
+  `temp/generate_3d_wallpapers.py`. See [Wallpapers.md](Wallpapers.md).
+
 - 2026-09-29: Window corner radius is `17px` in the `TontooOS-Dark` and
   `TontooOS-Light` GTK themes (`window.csd`/`decoration` plus attached
   headerbar top corners in all `gtk-3.0`/`gtk-4.0` `gtk.css`/`gtk-dark.css`

@@ -12,16 +12,28 @@ Each pack is one subdirectory named in upper case. Every pack ships a
 /System/User/Wallpapers/
 ├── BIGSUR/
 ├── CATALINA/
+├── DEPTH/
 ├── FLOW/
 ├── GOLDENGATE/
 ├── MOJAVE/
 ├── MONTEREY/
+├── PRISM/
 ├── SEQUOIA/
 ├── SONOMA/
 ├── THAOE/
 ├── THAOELAKE/
 ├── TONTOOOS/
-└── VENTURA/
+├── VENTURA/
+└── VORTEX/
+```
+
+The `DEPTH`, `PRISM` and `VORTEX` packs are generated 3D glass-ribbon
+wallpapers (5120x2880 `LIGHT.png` + `DARK.png`). The generator script is
+kept at `temp/generate_3d_wallpapers.py` in the TontooOS checkout and is
+never deleted, so variants stay reproducible:
+
+```bash
+python3 temp/generate_3d_wallpapers.py --packs VORTEX,PRISM,DEPTH
 ```
 
 Example manifest (`THAOELAKE/wallpaper.fish`):
