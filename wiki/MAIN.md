@@ -37,6 +37,11 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-09-29: Window corner radius is `17px` in the `TontooOS-Dark` and
+  `TontooOS-Light` GTK themes (`window.csd`/`decoration` plus attached
+  headerbar top corners in all `gtk-3.0`/`gtk-4.0` `gtk.css`/`gtk-dark.css`
+  files), matching TontooUI `WINDOW_CORNER_RADIUS`.
+
 - 2026-09-28: Pre-rendered the TontooBoot selection rings
   (`selection-big.png` 144x144, `selection-small.png` 48x48, orange
   `#ff6b2b`) and committed them in `BaseOS/bootloader/tontooboot/`.

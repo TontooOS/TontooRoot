@@ -2228,7 +2228,7 @@ headerbar.default-decoration, headerbar.default-decoration:backdrop {
 }
 
 separator:first-child + headerbar, separator:first-child + headerbar:backdrop, headerbar:first-child, headerbar:first-child:backdrop {
-  border-top-left-radius: 24px;
+  border-top-left-radius: 17px;
 }
 
 .maximized separator:first-child + headerbar, .tiled separator:first-child + headerbar, .maximized separator:first-child + headerbar:backdrop, .tiled separator:first-child + headerbar:backdrop, .maximized headerbar:first-child, .tiled headerbar:first-child, .maximized headerbar:first-child:backdrop, .tiled headerbar:first-child:backdrop {
@@ -2236,7 +2236,7 @@ separator:first-child + headerbar, separator:first-child + headerbar:backdrop, h
 }
 
 headerbar:last-child, headerbar:last-child:backdrop {
-  border-top-right-radius: 24px;
+  border-top-right-radius: 17px;
 }
 
 .maximized headerbar:last-child, .tiled headerbar:last-child, .maximized headerbar:last-child:backdrop, .tiled headerbar:last-child:backdrop {
@@ -2244,21 +2244,21 @@ headerbar:last-child, headerbar:last-child:backdrop {
 }
 
 stack headerbar:first-child, stack headerbar:last-child {
-  border-top-left-radius: 24px;
-  border-top-right-radius: 24px;
+  border-top-left-radius: 17px;
+  border-top-right-radius: 17px;
 }
 
 window separator:first-child + headerbar:backdrop, window separator:first-child + headerbar, window headerbar:first-child:backdrop, window headerbar:first-child {
-  border-top-left-radius: 24px;
+  border-top-left-radius: 17px;
 }
 
 window headerbar:last-child:backdrop, window headerbar:last-child {
-  border-top-right-radius: 24px;
+  border-top-right-radius: 17px;
 }
 
 window stack headerbar:first-child:backdrop, window stack headerbar:first-child, window stack headerbar:last-child:backdrop, window stack headerbar:last-child {
-  border-top-left-radius: 24px;
-  border-top-right-radius: 24px;
+  border-top-left-radius: 17px;
+  border-top-right-radius: 17px;
 }
 
 window.tiled headerbar, window.tiled headerbar:first-child, window.tiled headerbar:last-child, window.tiled headerbar:only-child, window.tiled-top headerbar, window.tiled-top headerbar:first-child, window.tiled-top headerbar:last-child, window.tiled-top headerbar:only-child, window.tiled-right headerbar, window.tiled-right headerbar:first-child, window.tiled-right headerbar:last-child, window.tiled-right headerbar:only-child, window.tiled-bottom headerbar, window.tiled-bottom headerbar:first-child, window.tiled-bottom headerbar:last-child, window.tiled-bottom headerbar:only-child, window.tiled-left headerbar, window.tiled-left headerbar:first-child, window.tiled-left headerbar:last-child, window.tiled-left headerbar:only-child, window.maximized headerbar, window.maximized headerbar:first-child, window.maximized headerbar:last-child, window.maximized headerbar:only-child {
@@ -2276,8 +2276,8 @@ window.fullscreen headerbar, window.fullscreen headerbar:first-child, window.ful
 }
 
 .titlebar, .titlebar.background {
-  border-top-left-radius: 24px;
-  border-top-right-radius: 24px;
+  border-top-left-radius: 17px;
+  border-top-right-radius: 17px;
 }
 
 .tiled .titlebar, .maximized .titlebar, .fullscreen .titlebar, .tiled .titlebar headerbar, .maximized .titlebar headerbar, .fullscreen .titlebar headerbar {
@@ -4869,7 +4869,7 @@ viewswitcher button > stack > box.narrow {
 
 decoration {
   transition: none;
-  border-radius: 12px;
+  border-radius: 17px;
   border-width: 0px;
   box-shadow: 2px 6px 6px 0 rgba(0, 0, 0, 0.22), 6px 14px 14px 0 rgba(0, 0, 0, 0.18), 10px 24px 24px 0 rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.08);
   margin: 10px;

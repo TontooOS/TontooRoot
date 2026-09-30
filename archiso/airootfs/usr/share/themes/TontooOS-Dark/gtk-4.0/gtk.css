@@ -6116,7 +6116,7 @@ window {
 
 window.csd {
   transition: none;
-  border-radius: 12px;
+  border-radius: 17px;
   outline: 1px solid rgba(255, 255, 255, 0.1);
   outline-offset: -1px;
   box-shadow: 0 3px 6px RGB(0 0 0/15%), 0 7px 24px RGB(0 0 0/12%), 0 12px 32px RGB(0 0 0/8%), 0 0 0 2px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.75);
@@ -6147,8 +6147,8 @@ window.csd.ssd-frame {
 }
 
 window.csd.ssd-frame headerbar {
-  border-top-left-radius: 24px;
-  border-top-right-radius: 24px;
+  border-top-left-radius: 17px;
+  border-top-right-radius: 17px;
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.1);
 }
 
