@@ -2,4 +2,10 @@ name: tapp-binfmt
 execute: sh /usr/local/bin/tapp-binfmt.sh
 type: sys
 user: root
+depends_on: []
 restart: false
+no_new_privs: true
+private_tmp: true
+protect_system: full
+memory_max: 128M
+tasks_max: 256

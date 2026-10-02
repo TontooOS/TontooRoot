@@ -832,6 +832,14 @@ mkdir -p "${target_mount}/System/services"
         "${target_mount}/System/services/${svc}.service"
     fi
   done
+# pipewire, pipewire-pulse and wireplumber carry `user: session`, so they need
+# no rewrite here: the daemon resolves the account at spawn time. Before that
+# placeholder existed they were `user: root`, which ran the whole audio stack
+# as root. The session account is derived from utmp or the first regular entry
+# in /etc/passwd, which is the account this installer just created. To pin it
+# explicitly, add `TONTOO_SESSION_USER=${username}` to the kernel command line
+# written by install_tontooboot_into_target: the kernel hands `key=value`
+# parameters to PID 1 as environment.
 
 # Create user-specific service overrides if needed
 if [[ "$ssh_enabled" == "true" ]]; then

@@ -1,6 +1,18 @@
 name: pipewire
 execute: /usr/bin/pipewire
 type: sys
-user: root
-depends_on: []
+user: session
+depends_on:
+  - live-setup
 restart: true
+no_new_privs: true
+private_tmp: true
+protect_system: full
+read_only_paths:
+  - /usr
+  - /System
+  - /Library/System
+memory_max: 256M
+tasks_max: 512
+env_allow:
+  - XDG_RUNTIME_DIR

@@ -5,3 +5,8 @@ user: root
 depends_on:
   - dbus
 restart: false
+no_new_privs: true
+private_tmp: true
+protect_system: full
+memory_max: 128M
+tasks_max: 256

@@ -14,6 +14,7 @@ boot and desktop path before branded layers are added.
 | Main index | [MAIN.md](MAIN.md) | This page |
 | Rules | [RULE.md](RULE.md) | Development and usage rules |
 | LivePackages | [LivePackages.md](LivePackages.md) | Live ISO packages and pacman keyring self-heal |
+| ServiceHardening | [ServiceHardening.md](ServiceHardening.md) | Per service sandbox policy for `/System/services/*.service` |
 | Frameworks | [Frameworks.md](Frameworks.md) | System libraries: `.library` bundles plus `.resources` sidecars under `/Library/System` |
 | Installer | [Installer.md](Installer.md) | Destructive Arch installer, Python config parsing |
 | Bootloader | [Bootloader.md](Bootloader.md) | TontooBoot rEFInd picker, Apple style, Dark #1d1d1d |
@@ -37,6 +38,21 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-10-02: Service sandboxing for all 17 files in
+  `archiso/airootfs/System/services/`. LaunchPad replaces systemd, so every
+  root service was running unconfined: no `no_new_privs`, no mount namespace,
+  no capability bounding set and no cgroups. Each service now declares
+  `no_new_privs`, `private_tmp`, `protect_system: full`, `read_only_paths`
+  where it reads `/System` or `/Applications`, and `memory_max` plus
+  `tasks_max`. `pipewire`, `wireplumber` and `pipewire-pulse` moved from
+  `user: root` to `user: session`, so the whole audio stack no longer runs as
+  root, and `pipewire` gained a `live-setup` dependency because the live ISO
+  creates the account in that service. `sshd` is deliberately left
+  unconfined, and `networkmanager` and `seatd` deliberately carry no
+  `capabilities` allowlist, all three documented in
+  [ServiceHardening.md](ServiceHardening.md). No service uses `device_allow`
+  yet: the cgroup v2 device filter needs a kernel verifier check that cannot
+  run under WSL2.
 - 2026-09-30: Added `LEGACYTIMES` wallpaper pack
   (`BaseOS/wallpapers/LEGACYTIMES/LIGHT.png` + `DARK.png`, 5120x2880):
   retro 2005-2010 nostalgia, Bliss hill with Aero gloss by day and

@@ -4,3 +4,8 @@ type: sys
 user: root
 depends_on: []
 restart: true
+no_new_privs: true
+private_tmp: true
+protect_system: full
+memory_max: 256M
+tasks_max: 512

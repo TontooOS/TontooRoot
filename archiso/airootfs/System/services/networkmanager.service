@@ -5,3 +5,11 @@ user: root
 depends_on:
   - dbus
 restart: true
+no_new_privs: true
+private_tmp: true
+protect_system: full
+memory_max: 512M
+tasks_max: 1024
+# No capabilities allowlist on purpose. NetworkManager needs a wide set for
+# netlink, DHCP privilege dropping and network namespaces, and a wrong list
+# breaks DHCP silently. Add one after testing on real hardware.

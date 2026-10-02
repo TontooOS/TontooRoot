@@ -5,3 +5,9 @@ user: root
 depends_on:
   - networkmanager
 restart: true
+# Deliberately unconfined for now. sshd privilege separation needs its
+# capability set and a private /tmp, and getting either wrong locks out remote
+# access to a machine with no console. Add no_new_privs and private_tmp after
+# testing on real hardware.
+memory_max: 256M
+tasks_max: 512

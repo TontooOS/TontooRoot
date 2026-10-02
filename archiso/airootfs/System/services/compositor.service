@@ -7,3 +7,16 @@ depends_on:
   - pipewire
   - live-setup
 restart: true
+no_new_privs: true
+private_tmp: true
+protect_system: full
+read_only_paths:
+  - /usr
+  - /System
+  - /Library/System
+memory_max: 1G
+tasks_max: 4096
+env_allow:
+  - XDG_RUNTIME_DIR
+  - WAYLAND_DISPLAY
+  - DISPLAY

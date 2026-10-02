@@ -6,3 +6,10 @@ depends_on:
   - dbus
   - live-setup
 restart: false
+no_new_privs: true
+private_tmp: true
+protect_system: full
+memory_max: 256M
+tasks_max: 256
+env_allow:
+  - XDG_RUNTIME_DIR

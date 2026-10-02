@@ -1,11 +1,3 @@
-# TontooOS system dock (external app, replaces the former
-# compositor-internal dock rendering).
-#
-# Multi-user note: the live ISO runs a single `liveuser` session, so the
-# service runs as `liveuser`. On installed systems `install-system.sh`
-# rewrites this file with the real username (`user: <username>`). When
-# LaunchPad gains per-session services, this becomes a session service
-# instantiated per logged-in user instead.
 name: dock
 execute: /usr/local/bin/start-dock.sh
 type: sys
@@ -14,3 +6,17 @@ depends_on:
   - compositor
   - live-setup
 restart: true
+no_new_privs: true
+private_tmp: true
+protect_system: full
+read_only_paths:
+  - /usr
+  - /System
+  - /Library/System
+memory_max: 512M
+tasks_max: 1024
+env_allow:
+  - XDG_RUNTIME_DIR
+  - WAYLAND_DISPLAY
+  - DISPLAY
+  - GDK_BACKEND

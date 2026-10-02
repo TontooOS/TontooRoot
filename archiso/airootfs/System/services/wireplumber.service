@@ -1,8 +1,19 @@
 name: wireplumber
 execute: /usr/bin/wireplumber
 type: sys
-user: root
+user: session
 depends_on:
   - pipewire
   - dbus
 restart: true
+no_new_privs: true
+private_tmp: true
+protect_system: full
+read_only_paths:
+  - /usr
+  - /System
+  - /Library/System
+memory_max: 256M
+tasks_max: 512
+env_allow:
+  - XDG_RUNTIME_DIR
