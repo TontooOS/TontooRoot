@@ -1,0 +1,15 @@
+{
+  "not_available": "Audiogerät oder Werkzeug nicht verfügbar",
+  "permission_denied": "Zugriff verweigert",
+  "timeout": "Vorgang hat das Zeitlimit überschritten",
+  "io_error": "E/A-Fehler: {}",
+  "command_failed": "Befehl fehlgeschlagen: {}",
+  "parse_error": "Fehler beim Auswerten: {}",
+  "decode_error": "Audio konnte nicht dekodiert werden: {}",
+  "encode_error": "Audio konnte nicht kodiert werden: {}",
+  "unsupported_format": "Nicht unterstütztes Audioformat: {}",
+  "device_not_found": "Audiogerät nicht gefunden: {}",
+  "stream_not_found": "Audiostream nicht gefunden: {}",
+  "no_default_device": "Kein Standard-Audiogerät verfügbar",
+  "pipewire_error": "PipeWire-Fehler: {}"
+}
