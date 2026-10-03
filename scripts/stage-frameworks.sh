@@ -46,7 +46,7 @@ fi
 
 # System framework location on the build machine (and on TontooOS). Framework
 # crates reference each other via absolute path deps like
-# `/Library/System/uikit`, so sources must be staged here before dependents build.
+# `/Library/System/CoreIcon`, so sources must be staged here before dependents build.
 system_dir="/Library/System"
 
 log_file="${base_dir}/BaseOS/out/stage-frameworks.log"
@@ -63,30 +63,68 @@ if [[ ! -d "${libs_src}" ]]; then
   exit 1
 fi
 
-# "system-name:RepoDir[:so-name]" in dependency order. Each entry's path
-# dependencies must appear before it: fishfile before coredata, uikit needs
-# uikitdynamics, webkit/tontooui need uikit + corelocation/coreicon, mapskit
-# needs uikit + corelocation, weatherkit needs corelocation.
+# "system-name:RepoDir[:so-name]" in dependency order. Every framework crate in
+# TontooLibs is listed here, so the ISO ships a `.library` for each of them and
+# the SDK can `dlopen` all of them from `/Library/System`. Each entry's path
+# dependencies must appear before it:
+#   foundation    -> fishfile, archivekit, sqllikit, coredata, coresettings,
+#                    networkkit, accessibility, corelocation, launchpad
+#   coretext      -> coreimage, mediakit, documentkit
+#   coreimage     -> coreicon, pdfkit
+#   fishfile      -> archivekit, coredata, documentkit
+#   archivekit    -> coreicon, corewindows, documentkit
+#   sqlkit        -> coredata
+#   networkkit    -> corelocation, mediakit, mapskit, weatherkit
+#   audiokit      -> mediakit
+#   corelocation  -> webkit, mapskit, weatherkit
+#   coreicon      -> mediakit
+#   tontooui      -> webkit, mapskit, pdfkit, documentkit
 # so-name defaults to system-name with '-' -> '_' (cargo lib naming); it is
 # only needed when the cargo lib name differs (e.g. launchpad-lib).
 FRAMEWORKS=(
+  "foundation:Foundation"
+  "coretext:CoreText"
+  "coreimage:CoreImage"
   "fishfile:FishFile"
+  "archivekit:ArchiveKit"
+  "sqlkit:SQLKit"
   "coredata:CoreData"
   "coresettings:CoreSettings"
-  "corewindows:CoreWindows"
-  "accessibility:Accessibility"
+  "networkkit:NetworkKit"
+  "audiokit:AudioKit"
   "corelocation:CoreLocation"
   "coreicon:CoreIcon"
-  "foundation:Foundation"
-  "networkkit:NetworkKit"
-  "uikitdynamics:UIKitDynamics"
-  "uikit:UIKit"
-  "webkit:WebKit"
+  "corewindows:CoreWindows"
+  "accessibility:Accessibility"
+  "mediakit:MediaKit"
   "tontooui:TontooUI"
+  "webkit:WebKit"
   "mapskit:MapsKit"
   "weatherkit:WeatherKit"
+  "pdfkit:PDFKit"
+  "documentkit:DocumentKit"
   "launchpad:LaunchPad:launchpad_lib"
 )
+
+resolve_target_dir() { # resolve_target_dir <RepoDir>
+  # Cargo does not always write into <repo>/target: CARGO_TARGET_DIR or a
+  # `build.target-dir` entry in ~/.cargo/config.toml redirect it (the WSL
+  # toolchain shares one cache dir for every crate). Ask cargo where the
+  # artifacts really land, otherwise no .library is ever found.
+  local src="$1"
+  if [[ -n "${CARGO_TARGET_DIR:-}" ]]; then
+    printf '%s\n' "${CARGO_TARGET_DIR}"
+    return 0
+  fi
+  local dir
+  dir="$(cd "${src}" && cargo metadata --format-version 1 --no-deps 2>/dev/null |
+    grep -o '"target_directory":"[^"]*"' | head -1 | cut -d'"' -f4)"
+  if [[ -n "${dir}" ]]; then
+    printf '%s\n' "${dir}"
+  else
+    printf '%s\n' "${src}/target"
+  fi
+}
 
 stage_sources() { # stage_sources <RepoDir> <system-name>
   local src="${libs_src}/$1"
@@ -168,7 +206,9 @@ build_framework() { # build_framework <RepoDir> <system-name> [so-name]
     return 1
   fi
 
-  local so_path="target/release/lib${so_base}.so"
+  local target_dir
+  target_dir="$(resolve_target_dir "${src}")"
+  local so_path="${target_dir}/release/lib${so_base}.so"
   log "[4/6] Looking for ${so_path}..."
   if [[ ! -f "${so_path}" ]]; then
     log "  No cdylib produced by default, forcing cdylib crate-type..."
@@ -186,7 +226,7 @@ build_framework() { # build_framework <RepoDir> <system-name> [so-name]
   fi
   if [[ ! -f "${so_path}" ]]; then
     error "Could not find built library at ${so_path}"
-    ls -la target/release/ 2>/dev/null || true
+    ls -la "${target_dir}/release/" 2>/dev/null | head -20 || true
     return 1
   fi
 

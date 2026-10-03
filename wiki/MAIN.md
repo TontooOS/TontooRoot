@@ -38,6 +38,22 @@ See [LivePackages.md](LivePackages.md) for details.
 
 ## Changelog
 
+- 2026-10-03: `stage-frameworks.sh` now builds **every** framework in
+  `TontooLibs` (16 -> 22), so the ISO ships a `.library` for each one and the
+  SDK can `dlopen` all of them from `/Library/System`. Added `coretext`,
+  `coreimage`, `archivekit`, `sqlkit`, `audiokit`, `mediakit`, `pdfkit` and
+  `documentkit`; dropped `uikit` and `uikitdynamics`, which no longer exist in
+  `TontooLibs`. The list is a valid topological order (every path dependency
+  is staged before its dependents, e.g. `coretext` before `coreimage`,
+  `archivekit` before `coreicon`, `mediakit` before `tontooui`).
+  `build-iso.sh` clones the same 22 repos in `--github-actions` mode, so CI
+  builds them too. Also fixed a bug that made the stage silently produce
+  nothing on this machine: the release artifacts are not in `<repo>/target`
+  when `~/.cargo/config.toml` sets `build.target-dir` (the WSL toolchain
+  shares one cache dir for all crates), so the hardcoded
+  `target/release/lib<name>.so` lookup never matched. `resolve_target_dir` now
+  asks cargo (`CARGO_TARGET_DIR`, then `cargo metadata`) where the artifacts
+  really are. See [Frameworks.md](Frameworks.md).
 - 2026-10-02: Service sandboxing for all 17 files in
   `archiso/airootfs/System/services/`. LaunchPad replaces systemd, so every
   root service was running unconfined: no `no_new_privs`, no mount namespace,
