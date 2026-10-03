@@ -35,7 +35,8 @@ jobs:
           pacman -Syu --noconfirm
           pacman -S --needed --noconfirm \
             base-devel git github-cli archiso rust python librsvg openssh \
-            xorg-xcursorgen sassc perl gawk gtk4
+            xorg-xcursorgen sassc perl gawk gtk4 \
+            qt5-wayland qt6-wayland
 
       - name: Build ISO
         run: bash BaseOS/scripts/build-iso.sh --github-actions

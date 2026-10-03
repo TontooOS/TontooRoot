@@ -152,6 +152,31 @@ write_qt_colors "${HOME_DIR}/.config/qt6ct"
 write_qt_conf "${HOME_DIR}/.config/qt5ct" "qt5ct.conf"
 write_qt_conf "${HOME_DIR}/.config/qt6ct" "qt6ct.conf"
 
+# --- Qt Wayland client-side decoration ---
+# Qt never draws CSD titlebars through QStyle: it loads a
+# wayland-decoration-client plugin instead (stock Qt ships "bradient", which
+# puts plain window buttons on the right). The "tontoo" plugin draws macOS
+# traffic lights on the left. Set it in the profile so every later login
+# shell inherits it, and export it now so apps started from this script's
+# session pick it up too. Missing plugin is not an error: Qt falls back to
+# bradient and apps still work, they just get the stock buttons.
+QT_DECORATION="tontoo"
+if ! ls /usr/lib/qt/plugins/wayland-decoration-client/libtontoo.so \
+          /usr/lib/qt6/plugins/wayland-decoration-client/libtontoo.so \
+          >/dev/null 2>&1; then
+  QT_DECORATION=""
+fi
+if [[ -n "${QT_DECORATION}" ]]; then
+  {
+    printf '%s\n' "# Written by tontoo-theme-apply. Qt CSD titlebars come from this"
+    printf '%s\n' "# wayland-decoration-client plugin, not from QStyle."
+    printf 'export QT_WAYLAND_DECORATION=%s\n' "${QT_DECORATION}"
+  } > "${HOME_DIR}/.config/tontoo/qt-decoration.sh" 2>/dev/null || true
+  export QT_WAYLAND_DECORATION="${QT_DECORATION}"
+else
+  rm -f "${HOME_DIR}/.config/tontoo/qt-decoration.sh" 2>/dev/null || true
+fi
+
 # --- Flatpak: let sandboxed apps see the system GTK configs (vendor advice) ---
 if have flatpak; then
   flatpak override --user --filesystem=xdg-config/gtk-3.0:ro >/dev/null 2>&1 || true

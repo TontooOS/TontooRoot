@@ -72,6 +72,7 @@ if [[ "${GITHUB_ACTIONS_BUILD}" -eq 1 ]]; then
   fi
   mkdir -p "${base_dir}/TontooProgramms" "${base_dir}/TontooServices" "${base_dir}/TontooLibs"
   clone_github_repo Compositor "${base_dir}/compositor"
+  clone_github_repo QtDecoration "${base_dir}/qt-decoration"
   clone_github_repo FishPerms "${base_dir}/TontooServices/FishPerms"
   # LaunchPad daemon lives on the master branch (main holds the client lib).
   clone_github_repo LaunchPad "${base_dir}/TontooServices/LaunchPad" master
@@ -81,7 +82,8 @@ if [[ "${GITHUB_ACTIONS_BUILD}" -eq 1 ]]; then
   clone_github_repo Dock "${base_dir}/TontooProgramms/Dock"
   clone_github_repo TBuild "${base_dir}/TontooProgramms/TBuild"
   clone_github_repo LaunchPadLib "${base_dir}/TontooLibs/LaunchPad"
-  for framework in FishFile CoreData CoreSettings CoreWindows Accessibility CoreLocation CoreIcon Foundation NetworkKit UIKitDynamics UIKit WebKit TontooUI MapsKit WeatherKit; do
+  # Every framework staged by stage-frameworks.sh, in the same order.
+  for framework in Foundation CoreText CoreImage FishFile ArchiveKit SQLKit CoreData CoreSettings NetworkKit AudioKit CoreLocation CoreIcon CoreWindows Accessibility MediaKit TontooUI WebKit MapsKit WeatherKit PDFKit DocumentKit; do
     clone_github_repo "${framework}" "${base_dir}/TontooLibs/${framework}"
   done
   # Point helpers with configurable source locations at the clones.
@@ -151,6 +153,7 @@ run_stage "aboutthisapp" "${base_dir}/BaseOS/scripts/stage-aboutthisapp.sh"
 run_stage "weather" "${base_dir}/BaseOS/scripts/stage-weather.sh"
 run_stage "terminal" "${base_dir}/BaseOS/scripts/stage-terminal.sh"
 run_stage "cursors" "${base_dir}/BaseOS/scripts/stage-cursors.sh"
+run_stage "qt-decoration" "${base_dir}/BaseOS/scripts/stage-qt-decoration.sh"
 run_stage "wallpapers" "${base_dir}/BaseOS/scripts/stage-wallpapers.sh"
 run_stage "frameworks" "${base_dir}/BaseOS/scripts/stage-frameworks.sh"
 run_stage "tontooboot" "${base_dir}/BaseOS/scripts/stage-tontooboot.sh"

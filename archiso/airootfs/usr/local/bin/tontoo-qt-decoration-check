@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+# tontoo-qt-decoration-check -- verify that Qt windows get the TontooOS
+# traffic lights, and optionally launch an app to look at.
+#
+# Usage:
+#   tontoo-qt-decoration-check            # diagnose only
+#   tontoo-qt-decoration-check kate       # diagnose, then launch kate
+#   tontoo-qt-decoration-check --qt6 app  # force a Qt version for the app
+#
+# Qt never draws client-side decoration titlebars through QStyle. It loads a
+# "wayland-decoration-client" plugin named by QT_WAYLAND_DECORATION, falling
+# back to the first plugin it finds (stock Qt ships "bradient", which puts
+# plain window buttons on the right). So the check is: is the tontoo plugin
+# on disk, is it the one Qt will pick, and does the running session point at
+# it.
+
+set -u
+
+PLUGIN_DIRS=(
+  "/usr/lib/qt/plugins/wayland-decoration-client"
+  "/usr/lib/qt6/plugins/wayland-decoration-client"
+  "/usr/lib/qt5/plugins/wayland-decoration-client"
+)
+
+fail=0
+
+report() { printf '%s\n' "$*"; }
+ok()    { printf '  [ ok ] %s\n' "$*"; }
+bad()   { printf '  [FAIL] %s\n' "$*"; fail=1; }
+info()  { printf '  [info] %s\n' "$*"; }
+
+report "==> TontooOS Qt decoration check"
+
+# --- 1. Is the plugin installed? ---
+found=""
+for dir in "${PLUGIN_DIRS[@]}"; do
+  if [[ -f "${dir}/libtontoo.so" ]]; then
+    found="${dir}/libtontoo.so"
+    ok "plugin present: ${found}"
+  fi
+done
+if [[ -z "${found}" ]]; then
+  bad "libtontoo.so not found in any Qt plugin directory."
+  report "        Build it with: bash BaseOS/scripts/stage-qt-decoration.sh"
+  report "        (needs qt5-wayland / qt6-wayland headers on the build host)"
+fi
+
+# --- 2. Will Qt pick it? ---
+target="${QT_WAYLAND_DECORATION:-}"
+if [[ -z "${target}" ]]; then
+  info "QT_WAYLAND_DECORATION is unset; Qt would fall back to whatever plugin"
+  info "comes first, which is stock 'bradient' (buttons on the right)."
+  bad "QT_WAYLAND_DECORATION is not set to 'tontoo'"
+elif [[ "${target}" == "tontoo" ]]; then
+  ok "QT_WAYLAND_DECORATION=${target}"
+else
+  bad "QT_WAYLAND_DECORATION=${target} (expected 'tontoo')"
+fi
+
+# --- 3. Is the session actually running Wayland + our compositor? ---
+if [[ "${XDG_SESSION_TYPE:-}" == "wayland" ]]; then
+  ok "XDG_SESSION_TYPE=wayland"
+elif [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
+  ok "WAYLAND_DISPLAY=${WAYLAND_DISPLAY}"
+else
+  info "not a Wayland session: Qt uses XCB and ignores the decoration plugin"
+  info "entirely. The traffic lights then come from the compositor/GTK theme."
+fi
+
+if [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
+  report "        compositor: $(pgrep -a tontoo-compositor 2>/dev/null || echo 'tontoo-compositor not found')"
+fi
+
+# --- 4. Optional: launch an app to look at ---
+app=""
+qt_major=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --qt5) qt_major=5; shift ;;
+    --qt6) qt_major=6; shift ;;
+    -h|--help)
+      report "usage: tontoo-qt-decoration-check [--qt5|--qt6] [app]"
+      exit 0
+      ;;
+    *) app="$1"; shift ;;
+  esac
+done
+
+if [[ -n "${app}" ]]; then
+  if ! command -v "${app}" >/dev/null 2>&1; then
+    bad "'${app}' is not installed, cannot launch it."
+  else
+    ok "launching ${app}"
+    report ""
+    report "    Look at the window: three dots on the LEFT, red/yellow/green."
+    report "    Hover a dot to see its symbol. Press Ctrl+C here when done."
+    report ""
+    env_args=()
+    [[ -n "${qt_major}" ]] && env_args+=("QT_WAYLAND_DECORATION=tontoo")
+    # shellcheck disable=SC2086
+    env "${env_args[@]:-}" "${app}" &
+    wait $!
+  fi
+fi
+
+report ""
+if [[ "${fail}" -eq 0 ]]; then
+  report "==> All checks passed."
+else
+  report "==> Problems found (see [FAIL] above)."
+fi
+exit "${fail}"

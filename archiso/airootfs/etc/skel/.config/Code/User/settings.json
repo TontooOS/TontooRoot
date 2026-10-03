@@ -1,4 +1,4 @@
 {
-    "window.titleBarStyle": "custom",
+    "window.titleBarStyle": "native",
     "window.autoDetectColorScheme": true
 }

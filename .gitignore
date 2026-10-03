@@ -18,6 +18,11 @@ archiso/airootfs/usr/share/icons/MacTahoe-dark-cursors/
 archiso/airootfs/usr/share/themes/MacTahoe-*/
 archiso/airootfs/usr/bin/tontoo-compositor
 archiso/airootfs/usr/bin/tontoo-shell-ui
+# Qt Wayland decoration plugin (stage-qt-decoration.sh rebuilds it from
+# qt-decoration/src for every Qt version it finds).
+archiso/airootfs/usr/lib/qt/plugins/wayland-decoration-client/
+archiso/airootfs/usr/lib/qt5/plugins/wayland-decoration-client/
+archiso/airootfs/usr/lib/qt6/plugins/wayland-decoration-client/
 archiso/airootfs/usr/bin/tapp
 archiso/airootfs/usr/bin/fishperms-daemon
 archiso/airootfs/usr/bin/fishpermctl
